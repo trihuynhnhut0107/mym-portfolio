@@ -5,7 +5,7 @@ export function MymLogo({ className = "h-6 w-6" }: { className?: string }) {
     <img
       src="/logos/portfolio/official-logo-1.svg"
       alt="MYM Logo"
-      className={cn("inline-block shrink-0", className)}
+      className={cn("inline-block shrink-0 brightness-0 invert", className)}
     />
   )
 }
