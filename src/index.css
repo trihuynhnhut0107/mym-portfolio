@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Colors */
+  --clr-primary: #253BFF; /* Vibrant Blue */
+  --clr-primary-hover: #3A4FFF;
+  --clr-secondary: #141843; /* Dark Navy Blue */
+  --clr-red: #FF253B; /* Vibrant Red for visible/hovered tiles */
+  --clr-red-hover: #FF4D61;
+
+  --clr-bg: #05050A; /* Very Dark Background */
+  --clr-card-bg: #0C0E18; /* Dark Card Background */
+  --clr-card-border: rgba(255, 255, 255, 0.08); /* Subtle card border */
+
+  --clr-text-light: #FFFFFF;
+  --clr-text-muted: #8E8E9E; /* Light gray for secondary text */
+  --clr-text-dark: #000000; /* For light sections like Hero */
+
+  /* Typography */
+  --font-heading: 'Funnel Display', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+  --font-funnel: 'Funnel Display', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 2rem;
+  --space-lg: 4rem;
+  --space-xl: 8rem;
+
+  /* Layout */
+  --container-width: 1200px;
+  --container-padding: 2rem;
+  --border-radius: 20px;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+
+  --text: var(--clr-text-muted);
+  --text-h: var(--clr-text-light);
+  --bg: var(--clr-bg);
+  --border: var(--clr-card-border);
+  --code-bg: var(--clr-card-bg);
+  --accent: var(--clr-primary);
+  --accent-bg: rgba(37, 59, 255, 0.15);
+  --accent-border: rgba(37, 59, 255, 0.5);
+
+  --sans: var(--font-body);
+  --heading: var(--font-heading);
+
+  font: 18px/145% var(--sans);
+  letter-spacing: 0.18px;
+  color-scheme: dark;
+  color: var(--clr-text-light);
+  background: var(--clr-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --background: var(--clr-bg);
+  --foreground: var(--clr-text-light);
+  --card: var(--clr-card-bg);
+  --card-foreground: var(--clr-text-light);
+  --popover: var(--clr-card-bg);
+  --popover-foreground: var(--clr-text-light);
+  --primary: var(--clr-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--clr-secondary);
+  --secondary-foreground: #ffffff;
+  --muted: var(--clr-card-bg);
+  --muted-foreground: var(--clr-text-muted);
+  --accent-foreground: #ffffff;
+  --destructive: oklch(0.577 0.245 27.325);
+  --input: var(--clr-card-border);
+  --ring: var(--clr-primary);
+  --radius: 20px;
+}
+
+/* Responsive Variables */
+@media (max-width: 1024px) {
+  :root {
+    --space-xl: 6rem;
+    --space-lg: 3rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --space-xl: 4rem;
+    --space-lg: 2rem;
+    --space-md: 1.5rem;
+    --container-padding: 1.25rem;
+  }
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  box-sizing: border-box;
+  background-color: var(--clr-bg);
+  color: var(--clr-text-light);
+  font-family: var(--font-body);
+}
+
+body {
+  margin: 0;
+  background-color: var(--clr-bg);
+  color: var(--clr-text-light);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+@theme inline {
+  --font-heading: 'Funnel Display', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+  --font-sans: 'Roboto', sans-serif;
+  --font-funnel: 'Funnel Display', sans-serif;
+  --font-roboto: 'Roboto', sans-serif;
+
+  --color-background: var(--clr-bg);
+  --color-foreground: var(--clr-text-light);
+  --color-border: var(--clr-card-border);
+  --color-ring: var(--clr-primary);
+
+  --color-clr-primary: var(--clr-primary);
+  --color-clr-primary-hover: var(--clr-primary-hover);
+  --color-clr-secondary: var(--clr-secondary);
+  --color-clr-red: var(--clr-red);
+  --color-clr-red-hover: var(--clr-red-hover);
+  --color-clr-bg: var(--clr-bg);
+  --color-clr-card-bg: var(--clr-card-bg);
+  --color-clr-card-border: var(--clr-card-border);
+  --color-clr-text-light: var(--clr-text-light);
+  --color-clr-text-muted: var(--clr-text-muted);
+  --color-clr-text-dark: var(--clr-text-dark);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;}
+  body {
+    @apply bg-background text-foreground;}
+  html {
+    @apply font-sans;}}
+
+@keyframes white-blue-tile-flash {
+  0%, 100% {
+    fill: #F5F5FF;
+  }
+  50% {
+    fill: #253BFF;
+  }
+}
+
+@keyframes blue-white-tile-flash {
+  0%, 100% {
+    fill: #253BFF;
+  }
+  50% {
+    fill: #F5F5FF;
+  }
+}
+
+.animate-white-blue-flash {
+  animation: white-blue-tile-flash 3.5s ease-in-out infinite;
+}
+
+.animate-blue-white-flash {
+  animation: blue-white-tile-flash 3.5s ease-in-out infinite;
+}
+
+@keyframes image-flash {
+  0%, 100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.animate-image-flash {
+  animation: image-flash 3.5s ease-in-out infinite;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+[data-magicui-theme-vt="active"]::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+[data-magicui-theme-vt="active"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  clip-path: var(--magicui-theme-vt-clip-from, circle(0% at 50% 50%));
+}
