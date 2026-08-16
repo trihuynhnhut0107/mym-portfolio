@@ -249,11 +249,12 @@ export function ProjectsSection({
     return (
       <motion.div
         key={project.id}
+        id={`project-card-${project.id}`}
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
-        className="w-full h-full cursor-pointer group/card"
+        className="w-full h-full cursor-pointer group/card scroll-mt-24 sm:scroll-mt-32"
         onClick={() => handleCardClick(project.id)}
       >
         <div className="p-6 sm:p-8 rounded-[28px] text-white shadow-2xl flex flex-col justify-between h-full gap-6 bg-[#253BFF] group-hover/card:ring-2 group-hover/card:ring-white/50 transition-all duration-300">

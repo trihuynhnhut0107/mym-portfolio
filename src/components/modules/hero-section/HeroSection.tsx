@@ -15,24 +15,31 @@ export function MeetYourMakerItem() {
 
 export function HeroSection() {
   return (
-    <section className="relative w-full h-screen min-h-screen overflow-hidden border-y border-white/10 dark:border-white/10 border-black/10 bg-transparent flex flex-col justify-between">
-      {/* Top Marquee Slider */}
-      <div className="relative z-20 w-full shrink-0 bg-[#05050A]/90 backdrop-blur-md border-b border-white/10 py-2.5 sm:py-3.5">
-        <Marquee repeat={10} className="[--duration:15s] [--gap:2rem]">
-          <MeetYourMakerItem />
-        </Marquee>
-      </div>
+    <section className="relative w-full min-h-screen overflow-hidden bg-transparent flex flex-col justify-center items-center">
+      {/* Center Block: Top Marquee + 3-Row Grid + Bottom Marquee */}
+      <div className="w-full flex flex-col items-center">
+        {/* Top Marquee Slider */}
+        <div className="relative z-20 w-full shrink-0 bg-[#05050A]/90 backdrop-blur-md border-y border-white/10 py-2.5 sm:py-3.5">
+          <Marquee repeat={10} className="[--duration:15s] [--gap:2rem]">
+            <MeetYourMakerItem />
+          </Marquee>
+        </div>
 
-      {/* Center Interactive Grid Pattern filling the gap */}
-      <div className="relative z-10 flex-1 w-full h-full min-h-0 overflow-hidden">
-        <InteractiveGridPattern width={160} height={160} squares={[20, 12]} />
-      </div>
+        {/* Center Interactive Grid Pattern with exactly 3 rows (3 * 160px = 480px) */}
+        <div className="relative z-10 w-full h-[480px] overflow-hidden">
+          <InteractiveGridPattern width={160} height={160} squares={[32, 3]} />
+        </div>
 
-      {/* Bottom Marquee Slider */}
-      <div className="relative z-20 w-full shrink-0 bg-[#05050A]/90 backdrop-blur-md border-t border-white/10 py-2.5 sm:py-3.5">
-        <Marquee reverse repeat={10} className="[--duration:15s] [--gap:2rem]">
-          <MeetYourMakerItem />
-        </Marquee>
+        {/* Bottom Marquee Slider */}
+        <div className="relative z-20 w-full shrink-0 bg-[#05050A]/90 backdrop-blur-md border-y border-white/10 py-2.5 sm:py-3.5">
+          <Marquee
+            reverse
+            repeat={10}
+            className="[--duration:15s] [--gap:2rem]"
+          >
+            <MeetYourMakerItem />
+          </Marquee>
+        </div>
       </div>
     </section>
   );

@@ -7,6 +7,8 @@ const DEFAULT_ZEN_IMAGES = [
   "/logos/zen-tactics/4.jpg",
 ];
 
+const DEFAULT_LABELS = ["Zen Tactics"];
+
 interface InteractiveGridPatternProps extends React.SVGProps<SVGSVGElement> {
   width?: number;
   height?: number;
@@ -14,6 +16,7 @@ interface InteractiveGridPatternProps extends React.SVGProps<SVGSVGElement> {
   className?: string;
   squaresClassName?: string;
   images?: string[];
+  labels?: string[];
   persistent?: boolean;
 }
 
@@ -30,6 +33,7 @@ export function InteractiveGridPattern({
   className,
   squaresClassName,
   images = DEFAULT_ZEN_IMAGES,
+  labels = DEFAULT_LABELS,
   persistent = true,
   ...props
 }: InteractiveGridPatternProps) {
@@ -56,7 +60,7 @@ export function InteractiveGridPattern({
       width={width * horizontal}
       height={height * vertical}
       className={cn(
-        "absolute inset-0 h-full w-full border border-white/5 pointer-events-auto",
+        "absolute inset-0 h-full w-full pointer-events-auto",
         className,
       )}
       {...props}
@@ -74,32 +78,69 @@ export function InteractiveGridPattern({
         const isLockedOpen = isHovered || isFlipped;
 
         if (isBlackTile) {
+          // The black tile directly below the active tile (row - 1, col)
+          const aboveIndex = (row - 1) * horizontal + col;
+          const isAboveLockedOpen =
+            row > 0 &&
+            (hoveredSquare === aboveIndex || flippedSquares.has(aboveIndex));
+          const aboveRandImgIndex =
+            row > 0
+              ? Math.floor(pseudoRandom(aboveIndex * 19 + 3) * images.length)
+              : 0;
+          const label =
+            row > 0 ? labels[aboveRandImgIndex % labels.length] : "";
+
           return (
-            <rect
+            <g
               key={index}
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              className={cn(
-                "fill-transparent stroke-white/10 dark:stroke-white/10 stroke-black/15 pointer-events-none",
-                squaresClassName,
+              className={row > 0 ? "cursor-pointer" : "pointer-events-none"}
+              onMouseEnter={() => row > 0 && handleMouseEnter(aboveIndex)}
+              onMouseLeave={() => setHoveredSquare(null)}
+            >
+              <rect
+                x={x}
+                y={y}
+                width={width}
+                height={height}
+                className={cn(
+                  "fill-transparent stroke-white/10 dark:stroke-white/10 stroke-black/15",
+                  squaresClassName,
+                )}
+              />
+              {row > 0 && label && (
+                <text
+                  x={x + 14}
+                  y={y + 24}
+                  className={cn(
+                    "font-sans text-[11px] font-medium tracking-wide fill-white select-none pointer-events-none transition-opacity duration-300 ease-in-out",
+                    isAboveLockedOpen ? "opacity-100" : "opacity-0",
+                  )}
+                >
+                  {label}
+                </text>
               )}
-            />
+              {/* Thin line between grid and bottom marquee for text */}
+              {row === vertical - 1 && (
+                <line
+                  x1={x}
+                  y1={y + height - 28}
+                  x2={x + width}
+                  y2={y + height - 28}
+                  className="stroke-white/10"
+                  strokeWidth={1}
+                />
+              )}
+            </g>
           );
         }
 
-        // Pseudo-randomized parameters for non-linear, organic flashing across grid
-        const randDelay = pseudoRandom(index * 7 + 1);
-        const randDuration = 2.5 + pseudoRandom(index * 13 + 2) * 2;
         const randImgIndex = Math.floor(
           pseudoRandom(index * 19 + 3) * images.length,
         );
-        const startWithBlue = pseudoRandom(index * 23 + 4) > 0.5;
-
+        // Deterministic diagonal striping pattern: ((row + col) / 2) % 2 === 1 for blue, 0 for white
+        const isBlue = ((row + col) / 2) % 2 === 1;
         const imageSrc = images[randImgIndex % images.length];
-        const delay = Math.round(randDelay * 4000) / 1000; // 0s to 4s
-        const duration = Math.round(randDuration * 100) / 100; // 2.5s to 4.5s
+        const labelText = labels[randImgIndex % labels.length];
 
         return (
           <g
@@ -108,7 +149,7 @@ export function InteractiveGridPattern({
             onMouseEnter={() => handleMouseEnter(index)}
             onMouseLeave={() => setHoveredSquare(null)}
           >
-            {/* Base tile background: Flashes between White & Blue when not locked open */}
+            {/* Base tile background: White / Blue diagonal striping when unrevealed, black when revealed */}
             <rect
               x={x}
               y={y}
@@ -118,42 +159,52 @@ export function InteractiveGridPattern({
                 "stroke-white/10 transition-all duration-300 ease-in-out",
                 isLockedOpen
                   ? "fill-black"
-                  : startWithBlue
-                    ? "animate-blue-white-flash"
-                    : "animate-white-blue-flash",
+                  : isBlue
+                    ? "fill-[#253BFF]"
+                    : "fill-white",
                 squaresClassName,
               )}
-              style={
-                isLockedOpen
-                  ? { animation: "none" }
-                  : {
-                      animationDelay: `${delay}s`,
-                      animationDuration: `${duration}s`,
-                    }
-              }
             />
 
-            {/* Tile image: Flashes in (visible) & out (hidden) when not hovered; locks to opacity 1 when hovered/flipped */}
+            {/* Tile image: revealed on hover */}
             <image
               href={imageSrc}
               x={x}
               y={y}
               width={width}
-              height={height}
+              height={row === vertical - 1 ? height - 28 : height}
               preserveAspectRatio="xMidYMid slice"
               className={cn(
                 "transition-opacity duration-300 ease-in-out pointer-events-none",
-                isLockedOpen ? "opacity-100" : "animate-image-flash",
+                isLockedOpen ? "opacity-100" : "opacity-0",
               )}
-              style={
-                isLockedOpen
-                  ? { animation: "none", opacity: 1 }
-                  : {
-                      animationDelay: `${delay}s`,
-                      animationDuration: `${duration}s`,
-                    }
-              }
             />
+
+            {/* Thin line between bottom grid cell and bottom marquee for text */}
+            {row === vertical - 1 && (
+              <line
+                x1={x}
+                y1={y + height - 28}
+                x2={x + width}
+                y2={y + height - 28}
+                className="stroke-white/10"
+                strokeWidth={1}
+              />
+            )}
+
+            {/* For the bottom row active cells with no row below them, show label right at the bottom edge */}
+            {row === vertical - 1 && (
+              <text
+                x={x + 14}
+                y={y + height - 10}
+                className={cn(
+                  "font-sans text-[11px] font-medium tracking-wide fill-white select-none pointer-events-none transition-opacity duration-300 ease-in-out",
+                  isLockedOpen ? "opacity-100" : "opacity-0",
+                )}
+              >
+                {labelText}
+              </text>
+            )}
           </g>
         );
       })}

@@ -1,16 +1,155 @@
 import { HeroSection } from "@/components/modules/hero-section";
 import { AestheticSection } from "@/components/modules/aesthetic-section";
+import { PartnerSection } from "@/components/modules/partner-section";
 import { OverviewSection } from "@/components/modules/overview-section";
 import { ProjectsSection } from "@/components/modules/projects-section";
 import { ProjectDetailPage } from "@/components/modules/project-detail";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { MymLogo } from "@/components/modules/mym-logo";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+
+const pageTransitionVariants = {
+  initial: {
+    opacity: 0,
+    y: 8,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.35,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -8,
+    transition: {
+      duration: 0.2,
+      ease: [0.22, 1, 0.36, 1] as const,
+    },
+  },
+};
+
+function ScrollToTop() {
+  const { pathname, hash, state } = useLocation();
+
+  useEffect(() => {
+    if (
+      hash === "#projects" ||
+      hash.startsWith("#project-") ||
+      (state as { scrollToProject?: string; scrollToProjects?: boolean } | null)
+        ?.scrollToProject ||
+      (state as { scrollToProject?: string; scrollToProjects?: boolean } | null)
+        ?.scrollToProjects
+    ) {
+      return;
+    }
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname, hash, state]);
+
+  return null;
+}
+
+function PageTransitionLoader() {
+  const location = useLocation();
+  const [isLoading, setIsLoading] = useState(false);
+  const prevPathnameRef = useRef(location.pathname);
+
+  useEffect(() => {
+    if (prevPathnameRef.current !== location.pathname) {
+      prevPathnameRef.current = location.pathname;
+
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [location.pathname]);
+
+  return (
+    <AnimatePresence>
+      {isLoading && (
+        <motion.div
+          key="page-loader"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{
+            opacity: 0,
+            scale: 0.95,
+            filter: "blur(6px)",
+            transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+          }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as const }}
+          className="fixed inset-0 z-[100] bg-[#05050A] flex items-center justify-center pointer-events-auto select-none"
+        >
+          {/* Subtle Radial Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(37,59,255,0.16)_0%,transparent_60%)] pointer-events-none" />
+
+          {/* MYM Logo Only */}
+          <motion.div
+            initial={{ scale: 0.75, opacity: 0 }}
+            animate={{ scale: [0.75, 1.05, 1], opacity: 1 }}
+            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] as const }}
+            className="relative z-10 flex items-center justify-center"
+          >
+            <MymLogo className="w-14 h-14 sm:w-20 sm:h-20 text-white drop-shadow-[0_0_35px_rgba(37,59,255,0.6)]" />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function PageTransition({ children }: { children: React.ReactNode }) {
+  return (
+    <motion.div
+      variants={pageTransitionVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="w-full"
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 function MainPortfolioPage() {
   const boundaryRef = useRef<HTMLDivElement>(null);
-  const overviewRef = useRef<HTMLDivElement>(null);
+  const partnerRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const targetProjectId =
+      (location.state as { scrollToProject?: string } | null)
+        ?.scrollToProject ||
+      (location.hash.startsWith("#project-")
+        ? location.hash.replace("#project-", "")
+        : null);
+
+    if (targetProjectId) {
+      const el = document.getElementById(`project-card-${targetProjectId}`);
+      if (el) {
+        el.scrollIntoView({ behavior: "instant", block: "center" });
+        return;
+      }
+    }
+
+    const shouldScrollToProjects =
+      location.hash === "#projects" ||
+      (location.state as { scrollToProjects?: boolean } | null)
+        ?.scrollToProjects;
+
+    if (shouldScrollToProjects && projectsRef.current) {
+      projectsRef.current.scrollIntoView({ behavior: "instant" });
+    }
+  }, [location.hash, location.state]);
 
   const targetProgressRef = useRef<number>(0);
   const currentProgressRef = useRef<number>(0);
@@ -24,6 +163,7 @@ function MainPortfolioPage() {
     viewportHeight: number;
     viewportWidth: number;
     smoothProgress: number;
+    smoothOverviewProgress: number;
     smoothProjectsProgress: number;
     bgColor: string;
   }>({
@@ -31,6 +171,7 @@ function MainPortfolioPage() {
     viewportHeight: typeof window !== "undefined" ? window.innerHeight : 800,
     viewportWidth: typeof window !== "undefined" ? window.innerWidth : 1200,
     smoothProgress: 0,
+    smoothOverviewProgress: 0,
     smoothProjectsProgress: 0,
     bgColor: "rgb(255, 255, 255)",
   });
@@ -63,12 +204,12 @@ function MainPortfolioPage() {
         currentProgressRef.current = target;
       }
 
-      if (overviewRef.current) {
-        const overviewRect = overviewRef.current.getBoundingClientRect();
-        const transitionStart = vh * 1.0;
-        const transitionEnd = vh * 0.1;
+      if (partnerRef.current) {
+        const partnerRect = partnerRef.current.getBoundingClientRect();
+        const transitionStart = vh * 0.65;
+        const transitionEnd = vh * 0.15;
         const rawOverviewTarget =
-          (transitionStart - overviewRect.top) /
+          (transitionStart - partnerRect.top) /
           (transitionStart - transitionEnd);
         targetOverviewProgressRef.current = Math.max(
           0,
@@ -78,8 +219,8 @@ function MainPortfolioPage() {
 
       if (projectsRef.current) {
         const projectsRect = projectsRef.current.getBoundingClientRect();
-        const transitionStart = vh * 0.65;
-        const transitionEnd = vh * 0.25;
+        const transitionStart = vh * 0.7;
+        const transitionEnd = vh * 0.2;
         const rawProjectsTarget =
           (transitionStart - projectsRect.top) /
           (transitionStart - transitionEnd);
@@ -95,7 +236,7 @@ function MainPortfolioPage() {
 
       let smoothOverviewProgress = currentOverview;
       if (Math.abs(overviewDiff) > 0.0001) {
-        smoothOverviewProgress = currentOverview + overviewDiff * 0.08;
+        smoothOverviewProgress = currentOverview + overviewDiff * 0.1;
         currentOverviewProgressRef.current = smoothOverviewProgress;
       } else {
         smoothOverviewProgress = targetOverview;
@@ -108,7 +249,7 @@ function MainPortfolioPage() {
 
       let smoothProjectsProgress = currentProjects;
       if (Math.abs(projectsDiff) > 0.0001) {
-        smoothProjectsProgress = currentProjects + projectsDiff * 0.15;
+        smoothProjectsProgress = currentProjects + projectsDiff * 0.12;
         currentProjectsProgressRef.current = smoothProjectsProgress;
       } else {
         smoothProjectsProgress = targetProjects;
@@ -140,6 +281,7 @@ function MainPortfolioPage() {
         viewportHeight: vh,
         viewportWidth: vw,
         smoothProgress: nextProgress,
+        smoothOverviewProgress,
         smoothProjectsProgress,
         bgColor: currentBgColor,
       });
@@ -168,18 +310,9 @@ function MainPortfolioPage() {
     navigate(`/project/${projectId}`);
   };
 
-  const {
-    directTopPx,
-    viewportHeight,
-    viewportWidth,
-    smoothProgress,
-    bgColor,
-  } = animState;
+  const { viewportHeight, viewportWidth, smoothProgress, bgColor } = animState;
 
-  const maxCornerDistancePx = Math.hypot(
-    viewportWidth / 2,
-    Math.max(Math.abs(directTopPx), Math.abs(viewportHeight - directTopPx)),
-  );
+  const maxCornerDistancePx = Math.hypot(viewportWidth / 2, viewportHeight / 2);
   const clipRadiusPx = smoothProgress * maxCornerDistancePx;
 
   return (
@@ -188,7 +321,7 @@ function MainPortfolioPage() {
       <div
         className="fixed inset-0 pointer-events-none z-0"
         style={{
-          clipPath: `circle(${clipRadiusPx}px at 50% ${directTopPx}px)`,
+          clipPath: `circle(${clipRadiusPx}px at 50% 50%)`,
           opacity: smoothProgress > 0 ? 1 : 0,
           backgroundColor: bgColor,
         }}
@@ -207,10 +340,13 @@ function MainPortfolioPage() {
         {/* Aesthetic Section */}
         <AestheticSection />
 
-        {/* Overview Section */}
-        <div ref={overviewRef} className="w-full">
-          <OverviewSection />
+        {/* Partner Section */}
+        <div ref={partnerRef} className="w-full">
+          <PartnerSection partnerProgress={animState.smoothOverviewProgress} />
         </div>
+
+        {/* Overview Section */}
+        <OverviewSection />
 
         {/* Projects Section */}
         <div ref={projectsRef} className="w-full">
@@ -225,12 +361,41 @@ function MainPortfolioPage() {
 }
 
 function App() {
+  const location = useLocation();
+
   return (
-    <Routes>
-      <Route path="/" element={<MainPortfolioPage />} />
-      <Route path="/project/:projectId" element={<ProjectDetailPage />} />
-      <Route path="*" element={<MainPortfolioPage />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <PageTransitionLoader />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route
+            path="/"
+            element={
+              <PageTransition>
+                <MainPortfolioPage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="/project/:projectId"
+            element={
+              <PageTransition>
+                <ProjectDetailPage />
+              </PageTransition>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <PageTransition>
+                <MainPortfolioPage />
+              </PageTransition>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
+    </>
   );
 }
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { PROJECTS_DETAIL_DATA } from "@/data/projectsData";
 import type { ProjectDetail } from "@/data/projectsData";
 import { ArrowLeft, Play, X, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface MediaSlotProps {
   url?: string;
@@ -98,7 +99,9 @@ export function ProjectDetailPage() {
   } | null>(null);
 
   const handleBack = () => {
-    navigate("/");
+    navigate(`/#project-${currentId}`, {
+      state: { scrollToProject: currentId, scrollToProjects: true },
+    });
   };
 
   const handleOpenMedia = (url: string, title: string) => {
@@ -111,9 +114,14 @@ export function ProjectDetailPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F6F7FD] text-[#05050A] flex flex-col font-sans select-none animate-fadeIn">
+    <div className="w-full min-h-screen bg-[#F6F7FD] text-[#05050A] flex flex-col font-sans select-none">
       {/* 1. TOP HEADER BAR */}
-      <header className="sticky top-0 z-50 w-full bg-[#05050A] text-white py-3 sm:py-4 px-4 sm:px-12 flex items-center justify-between shadow-lg border-b border-white/10">
+      <motion.header
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        className="sticky top-0 z-50 w-full bg-[#05050A] text-white py-3 sm:py-4 px-4 sm:px-12 flex items-center justify-between shadow-lg border-b border-white/10"
+      >
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={handleBack}
@@ -124,7 +132,7 @@ export function ProjectDetailPage() {
           </button>
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-white/50">
             <span
-              onClick={() => navigate("/")}
+              onClick={handleBack}
               className="hover:text-white transition-colors cursor-pointer"
             >
               MYM's Projects
@@ -142,7 +150,7 @@ export function ProjectDetailPage() {
             {project.tag}
           </span>
         </div>
-      </header>
+      </motion.header>
 
       {/* 2. PROJECT HERO & DESCRIPTION SECTION */}
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-12 pt-8 sm:pt-16 pb-8 flex flex-col gap-8 sm:gap-12">
@@ -150,33 +158,56 @@ export function ProjectDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 items-start">
           {/* Left Title Column */}
           <div className="lg:col-span-5 flex flex-col gap-1 sm:gap-2">
-            <span className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#253BFF]">
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+              className="text-xs sm:text-sm font-semibold uppercase tracking-widest text-[#253BFF]"
+            >
               Project
-            </span>
-            <h1 className="text-3xl sm:text-6xl font-extrabold tracking-tight text-[#253BFF] font-funnel">
+            </motion.span>
+            <motion.h1
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+              className="text-3xl sm:text-6xl font-extrabold tracking-tight text-[#253BFF] font-funnel"
+            >
               {project.title}
-            </h1>
+            </motion.h1>
           </div>
 
           {/* Right 2-Column Paragraph Description */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm text-[#05050A]/80 leading-relaxed font-sans">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-xs sm:text-sm text-[#05050A]/80 leading-relaxed font-sans"
+          >
             <p className="border-l-2 border-[#253BFF]/30 pl-3 sm:pl-4">
               {project.description}
             </p>
             <p className="border-l-2 border-[#253BFF]/30 pl-3 sm:pl-4">
               {project.vision}
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Node Stats Bar (3 Connected Circular Nodes) */}
-        <div className="w-full py-4 sm:py-8 flex items-center justify-between relative px-2 sm:px-12">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full py-4 sm:py-8 flex items-center justify-between relative px-2 sm:px-12"
+        >
           {/* Connecting Line */}
           <div className="absolute left-10 right-10 sm:left-16 sm:right-16 top-1/2 -translate-y-1/2 h-0.5 bg-[#253BFF]/30 z-0" />
 
           {project.statsNodes.map((node, idx) => (
-            <div
+            <motion.div
               key={idx}
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.45, delay: 0.3 + idx * 0.08, ease: [0.22, 1, 0.36, 1] }}
               className="relative z-10 flex flex-col items-center justify-center w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full bg-[#253BFF] text-white shadow-xl shadow-[#253BFF]/25 transition-transform duration-300 hover:scale-105"
             >
               <span className="text-base sm:text-xl md:text-2xl font-black font-funnel leading-none">
@@ -185,13 +216,18 @@ export function ProjectDetailPage() {
               <span className="text-[9px] sm:text-xs font-semibold uppercase tracking-wider text-white/80 mt-0.5 sm:mt-1 text-center">
                 {node.label}
               </span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* 3. MEDIA GRID LAYOUT (RESPONSIVE ZERO-GAP MATHEMATICAL ASPECT RATIO ALIGNMENT) */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-12 pb-16 sm:pb-24 flex flex-col gap-0">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.36, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-7xl mx-auto px-4 sm:px-12 pb-16 sm:pb-24 flex flex-col gap-0"
+      >
         {/* ROW 1: Video 1920x1080 (flex-[32]) + 2x Logo 1000x1000 Stack (flex-[9]) */}
         <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
           <div className="w-full md:w-auto md:flex-[32]">
@@ -403,7 +439,7 @@ export function ProjectDetailPage() {
             onOpen={handleOpenMedia}
           />
         </div>
-      </section>
+      </motion.section>
 
       {/* 4. FOOTER */}
       <footer className="w-full bg-[#05050A] text-white py-12 sm:py-16 px-4 sm:px-12 border-t border-white/10 mt-auto">
@@ -458,7 +494,7 @@ export function ProjectDetailPage() {
                 Overview
               </span>
               <span
-                onClick={() => navigate("/")}
+                onClick={handleBack}
                 className="text-[#253BFF] font-semibold cursor-pointer"
               >
                 Projects
