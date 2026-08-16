@@ -54,8 +54,16 @@ function ScrollToTop() {
 
 function PageTransitionLoader() {
   const location = useLocation();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const prevPathnameRef = useRef(location.pathname);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (prevPathnameRef.current !== location.pathname) {
@@ -75,13 +83,13 @@ function PageTransitionLoader() {
       {isLoading && (
         <motion.div
           key="page-loader"
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
           exit={{
             opacity: 0,
             scale: 0.95,
             filter: "blur(6px)",
-            transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] as const },
+            transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const },
           }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] as const }}
           className="fixed inset-0 z-[100] bg-[#05050A] flex items-center justify-center pointer-events-auto select-none"
@@ -176,6 +184,8 @@ function MainPortfolioPage() {
     bgColor: "rgb(255, 255, 255)",
   });
 
+  const isInitialRenderRef = useRef(true);
+
   useEffect(() => {
     let animationFrameId: number;
 
@@ -191,13 +201,17 @@ function MainPortfolioPage() {
       const clampedTarget = Math.max(0, Math.min(1, rawProgress));
       targetProgressRef.current = clampedTarget;
 
+      if (isInitialRenderRef.current) {
+        currentProgressRef.current = clampedTarget;
+      }
+
       const target = targetProgressRef.current;
       const current = currentProgressRef.current;
       const diff = target - current;
 
       let nextProgress = current;
       if (Math.abs(diff) > 0.0001) {
-        nextProgress = current + diff * 0.08;
+        nextProgress = current + diff * 0.05;
         currentProgressRef.current = nextProgress;
       } else {
         nextProgress = target;
@@ -228,6 +242,12 @@ function MainPortfolioPage() {
           0,
           Math.min(1, rawProjectsTarget),
         );
+      }
+
+      if (isInitialRenderRef.current) {
+        currentOverviewProgressRef.current = targetOverviewProgressRef.current;
+        currentProjectsProgressRef.current = targetProjectsProgressRef.current;
+        isInitialRenderRef.current = false;
       }
 
       const targetOverview = targetOverviewProgressRef.current;
@@ -310,9 +330,18 @@ function MainPortfolioPage() {
     navigate(`/project/${projectId}`);
   };
 
-  const { viewportHeight, viewportWidth, smoothProgress, bgColor } = animState;
+  const {
+    directTopPx,
+    viewportHeight,
+    viewportWidth,
+    smoothProgress,
+    bgColor,
+  } = animState;
 
-  const maxCornerDistancePx = Math.hypot(viewportWidth / 2, viewportHeight / 2);
+  const maxCornerDistancePx = Math.hypot(
+    viewportWidth / 2,
+    Math.max(Math.abs(directTopPx), Math.abs(viewportHeight - directTopPx)),
+  );
   const clipRadiusPx = smoothProgress * maxCornerDistancePx;
 
   return (
@@ -321,7 +350,7 @@ function MainPortfolioPage() {
       <div
         className="fixed inset-0 pointer-events-none z-0"
         style={{
-          clipPath: `circle(${clipRadiusPx}px at 50% 50%)`,
+          clipPath: `circle(${clipRadiusPx}px at 50% ${directTopPx}px)`,
           opacity: smoothProgress > 0 ? 1 : 0,
           backgroundColor: bgColor,
         }}
