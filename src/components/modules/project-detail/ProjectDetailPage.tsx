@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PROJECTS_DETAIL_DATA } from "@/data/projectsData";
 import type { ProjectDetail } from "@/data/projectsData";
-import { ArrowLeft, Play, X, ChevronRight } from "lucide-react";
+import { ArrowLeft, Play, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { Footer } from "@/components/modules/footer";
 
 interface MediaSlotProps {
   url?: string;
@@ -442,68 +443,7 @@ export function ProjectDetailPage() {
       </motion.section>
 
       {/* 4. FOOTER */}
-      <footer className="w-full bg-[#05050A] text-white py-12 sm:py-16 px-4 sm:px-12 border-t border-white/10 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col gap-8 sm:gap-12">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8 pb-8 sm:pb-12 border-b border-white/10">
-            {/* Brand Logo & Slogan */}
-            <div className="flex flex-col gap-1 sm:gap-2">
-              <div
-                onClick={() => navigate("/")}
-                className="flex items-center gap-3 cursor-pointer group"
-              >
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#253BFF] flex items-center justify-center font-bold text-white text-base sm:text-lg group-hover:scale-105 transition-transform">
-                  M
-                </div>
-                <span className="text-xl sm:text-2xl font-black tracking-tight font-funnel">
-                  MYM
-                </span>
-              </div>
-              <span className="text-[10px] sm:text-xs text-white/60 uppercase tracking-widest font-mono">
-                Meet Your Maker
-              </span>
-            </div>
-
-            {/* Contact Us Bar */}
-            <div className="flex items-center gap-3 sm:gap-4 bg-white/5 border border-white/10 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full hover:bg-white/10 transition-colors cursor-pointer group">
-              <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-white">
-                Contact Us
-              </span>
-              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#253BFF] group-hover:translate-x-1 transition-transform" />
-            </div>
-          </div>
-
-          {/* Footer Links & Copyright */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] sm:text-xs text-white/50">
-            <div className="flex items-center gap-4 sm:gap-6 font-funnel">
-              <span
-                onClick={() => navigate("/")}
-                className="hover:text-white transition-colors cursor-pointer"
-              >
-                Home
-              </span>
-              <span
-                onClick={() => navigate("/")}
-                className="hover:text-white transition-colors cursor-pointer"
-              >
-                Aesthetics
-              </span>
-              <span
-                onClick={() => navigate("/")}
-                className="hover:text-white transition-colors cursor-pointer"
-              >
-                Overview
-              </span>
-              <span
-                onClick={handleBack}
-                className="text-[#253BFF] font-semibold cursor-pointer"
-              >
-                Projects
-              </span>
-            </div>
-            <span>© 2026 MYM Portfolio. All rights reserved.</span>
-          </div>
-        </div>
-      </footer>
+      <Footer />
 
       {/* 5. INTERACTIVE MEDIA LIGHTBOX MODAL */}
       {activeMedia && (

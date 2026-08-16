@@ -305,7 +305,7 @@ export function OverviewSection() {
 
   return (
     <section
-      id="about"
+      id="overview"
       className="w-full min-h-screen bg-transparent text-white flex flex-col justify-center items-center relative overflow-hidden py-16 sm:py-24 px-6 sm:px-12 select-none"
     >
       <div className="w-full max-w-7xl mx-auto flex flex-col items-center gap-20 sm:gap-28">

@@ -4,6 +4,7 @@ import { PartnerSection } from "@/components/modules/partner-section";
 import { OverviewSection } from "@/components/modules/overview-section";
 import { ProjectsSection } from "@/components/modules/projects-section";
 import { ProjectDetailPage } from "@/components/modules/project-detail";
+import { Footer } from "@/components/modules/footer";
 import { MymLogo } from "@/components/modules/mym-logo";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -384,6 +385,9 @@ function MainPortfolioPage() {
             projectsProgress={animState.smoothProjectsProgress}
           />
         </div>
+
+        {/* Global Footer */}
+        <Footer />
       </div>
     </div>
   );

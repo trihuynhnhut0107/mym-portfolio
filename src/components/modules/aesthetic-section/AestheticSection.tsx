@@ -195,7 +195,10 @@ function MarqueeRow({
 
 export function AestheticSection() {
   return (
-    <section className="w-full min-h-screen flex flex-col justify-between relative overflow-hidden py-12 sm:py-16 select-none bg-transparent">
+    <section
+      id="aesthetic"
+      className="w-full min-h-screen flex flex-col justify-between relative overflow-hidden py-12 sm:py-16 select-none bg-transparent"
+    >
       {/* Header Part */}
       <div className="w-full max-w-7xl mx-auto px-6 sm:px-8 mb-6 sm:mb-8 flex flex-col items-start gap-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#253BFF]/10 border border-[#253BFF]/30 backdrop-blur-md">
