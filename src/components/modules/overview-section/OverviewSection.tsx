@@ -293,7 +293,13 @@ const HLV_CLOUD_ICONS = [
   createIconBadge("M5 3l14 9-14 9V3z", "#FFFFFF", "#253BFF"),
 ];
 
-export function OverviewSection() {
+interface OverviewSectionProps {
+  overviewProgress?: number;
+}
+
+export function OverviewSection({
+  overviewProgress = 1,
+}: OverviewSectionProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const node0Ref = useRef<HTMLDivElement>(null);
   const node1Ref = useRef<HTMLDivElement>(null);
@@ -302,6 +308,20 @@ export function OverviewSection() {
   const node4Ref = useRef<HTMLDivElement>(null);
 
   const nodeRefs = [node0Ref, node1Ref, node2Ref, node3Ref, node4Ref];
+
+  const progress = Math.max(0, Math.min(1, overviewProgress));
+
+  // Dynamic heading color transition: #05050A (black on white bg) -> #FFFFFF (white on blue bg)
+  const titleR = Math.round(5 + (255 - 5) * progress);
+  const titleG = Math.round(5 + (255 - 5) * progress);
+  const titleB = Math.round(10 + (255 - 10) * progress);
+  const titleColor = `rgb(${titleR}, ${titleG}, ${titleB})`;
+
+  // Dynamic description color transition: #334155 (dark slate) -> rgba(255, 255, 255, 0.9)
+  const descR = Math.round(51 + (255 - 51) * progress);
+  const descG = Math.round(65 + (255 - 65) * progress);
+  const descB = Math.round(85 + (255 - 85) * progress);
+  const descColor = `rgb(${descR}, ${descG}, ${descB})`;
 
   return (
     <section
@@ -312,11 +332,17 @@ export function OverviewSection() {
         {/* Part 1: Who is MYM? */}
         <div className="w-full flex flex-col items-center text-center gap-10 sm:gap-14">
           <div className="w-full flex flex-col items-center text-center gap-4 max-w-3xl mx-auto">
-            <h2 className="font-funnel text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight text-center">
+            <h2
+              style={{ color: titleColor }}
+              className="font-funnel text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-center transition-colors duration-150"
+            >
               Who is “MYM”?
             </h2>
 
-            <div className="flex flex-col gap-3 text-white/90 text-sm sm:text-base font-roboto leading-relaxed text-center max-w-2xl">
+            <div
+              style={{ color: descColor }}
+              className="flex flex-col gap-3 text-sm sm:text-base font-roboto leading-relaxed text-center max-w-2xl transition-colors duration-150"
+            >
               <p>
                 Every great achievement begins as a fragment of imagination. But
                 the distance between a brilliant idea and its reality is often a

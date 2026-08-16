@@ -212,7 +212,7 @@ function MainPortfolioPage() {
 
       let nextProgress = current;
       if (Math.abs(diff) > 0.0001) {
-        nextProgress = current + diff * 0.05;
+        nextProgress = current + diff * 0.08;
         currentProgressRef.current = nextProgress;
       } else {
         nextProgress = target;
@@ -221,8 +221,10 @@ function MainPortfolioPage() {
 
       if (partnerRef.current) {
         const partnerRect = partnerRef.current.getBoundingClientRect();
-        const transitionStart = vh * 0.65;
-        const transitionEnd = vh * 0.15;
+        // Keep partner section visible on pure white background
+        // Only start transition to blue as partner section scrolls towards top of screen
+        const transitionStart = vh * 0.2;
+        const transitionEnd = -vh * 0.15;
         const rawOverviewTarget =
           (transitionStart - partnerRect.top) /
           (transitionStart - transitionEnd);
@@ -234,7 +236,7 @@ function MainPortfolioPage() {
 
       if (projectsRef.current) {
         const projectsRect = projectsRef.current.getBoundingClientRect();
-        const transitionStart = vh * 0.7;
+        const transitionStart = vh * 0.65;
         const transitionEnd = vh * 0.2;
         const rawProjectsTarget =
           (transitionStart - projectsRect.top) /
@@ -257,7 +259,7 @@ function MainPortfolioPage() {
 
       let smoothOverviewProgress = currentOverview;
       if (Math.abs(overviewDiff) > 0.0001) {
-        smoothOverviewProgress = currentOverview + overviewDiff * 0.1;
+        smoothOverviewProgress = currentOverview + overviewDiff * 0.16;
         currentOverviewProgressRef.current = smoothOverviewProgress;
       } else {
         smoothOverviewProgress = targetOverview;
@@ -270,7 +272,7 @@ function MainPortfolioPage() {
 
       let smoothProjectsProgress = currentProjects;
       if (Math.abs(projectsDiff) > 0.0001) {
-        smoothProjectsProgress = currentProjects + projectsDiff * 0.12;
+        smoothProjectsProgress = currentProjects + projectsDiff * 0.18;
         currentProjectsProgressRef.current = smoothProjectsProgress;
       } else {
         smoothProjectsProgress = targetProjects;
@@ -376,7 +378,9 @@ function MainPortfolioPage() {
         </div>
 
         {/* Overview Section */}
-        <OverviewSection />
+        <OverviewSection
+          overviewProgress={animState.smoothOverviewProgress}
+        />
 
         {/* Projects Section */}
         <div ref={projectsRef} className="w-full">
