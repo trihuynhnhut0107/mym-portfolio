@@ -6,6 +6,34 @@ import { ArrowLeft, Play, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Footer } from "@/components/modules/footer";
 
+function getVideoEmbedUrl(url: string): string | null {
+  if (!url) return null;
+
+  // 1. YouTube
+  const ytMatch = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=0&rel=0&modestbranding=1`;
+  }
+
+  // 2. Google Drive Video Preview
+  const gdriveMatch = url.match(
+    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
+  );
+  if (gdriveMatch && gdriveMatch[1]) {
+    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`;
+  }
+
+  // 3. Vimeo
+  const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=0`;
+  }
+
+  return null;
+}
+
 interface MediaSlotProps {
   url?: string;
   type: "Video" | "Logo" | "Image";
@@ -25,6 +53,7 @@ function MediaSlot({
 }: MediaSlotProps) {
   const isVideo = type === "Video";
   const title = `${type} ${resolution}`;
+  const embedUrl = url ? getVideoEmbedUrl(url) : null;
 
   if (!url) {
     // Blue Tile Wireframe Placeholder Box
@@ -54,6 +83,24 @@ function MediaSlot({
     );
   }
 
+  // If this is an iframe embed (e.g. YouTube video, Google Drive video, Vimeo)
+  if (embedUrl) {
+    return (
+      <div
+        className={`relative group bg-[#05050A] overflow-hidden border border-white/20 w-full ${aspectClass} ${className}`}
+      >
+        <iframe
+          src={embedUrl}
+          title={title}
+          className="w-full h-full border-0 absolute inset-0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
   // Real Image / Video / Logo Display
   return (
     <div
@@ -65,20 +112,11 @@ function MediaSlot({
         alt={title}
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
       />
-      {isVideo ? (
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex flex-col items-center justify-center gap-2">
+      {isVideo && (
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
           <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#253BFF] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
             <Play className="w-4 h-4 sm:w-5 sm:h-5 fill-white translate-x-0.5" />
           </div>
-          <span className="text-[10px] sm:text-xs font-mono font-medium text-white/90 bg-black/60 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded">
-            {title}
-          </span>
-        </div>
-      ) : (
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-          <span className="opacity-0 group-hover:opacity-100 transition-opacity text-[10px] sm:text-xs font-mono font-medium text-white bg-black/70 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded">
-            {title}
-          </span>
         </div>
       )}
     </div>
@@ -233,7 +271,7 @@ export function ProjectDetailPage() {
         <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
           <div className="w-full md:w-auto md:flex-[32]">
             <MediaSlot
-              url={project.videos[0]}
+              url={project.horizontalVideos?.[0] || project.videos?.[0]}
               type="Video"
               resolution="1920x1080"
               aspectClass="aspect-[16/9]"
@@ -287,14 +325,14 @@ export function ProjectDetailPage() {
         <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
           <div className="w-full md:w-auto md:flex-[162] grid grid-cols-2 gap-0">
             <MediaSlot
-              url={project.verticalImages[0]}
+              url={project.verticalVideos?.[0]}
               type="Video"
               resolution="1080x1920"
               aspectClass="aspect-[9/16]"
               onOpen={handleOpenMedia}
             />
             <MediaSlot
-              url={project.verticalImages[1]}
+              url={project.verticalVideos?.[1]}
               type="Video"
               resolution="1080x1920"
               aspectClass="aspect-[9/16]"
@@ -335,7 +373,7 @@ export function ProjectDetailPage() {
           {/* Col 2: Vertical Image 1080x1920 (flex-[243]) */}
           <div className="w-full md:w-auto md:flex-[243]">
             <MediaSlot
-              url={project.verticalImages[2]}
+              url={project.verticalImages?.[0]}
               type="Image"
               resolution="1080x1920"
               aspectClass="aspect-[9/16]"
@@ -371,7 +409,7 @@ export function ProjectDetailPage() {
           {/* Col 4: Vertical Image 1080x1920 (flex-[243]) */}
           <div className="w-full md:w-auto md:flex-[243]">
             <MediaSlot
-              url={project.verticalImages[3]}
+              url={project.verticalImages?.[1]}
               type="Image"
               resolution="1080x1920"
               aspectClass="aspect-[9/16]"
@@ -383,7 +421,7 @@ export function ProjectDetailPage() {
         {/* ROW 5: Full Width Feature Video 1920x1080 */}
         <div className="w-full">
           <MediaSlot
-            url={project.videos[1]}
+            url={project.horizontalVideos?.[1] || project.videos?.[1]}
             type="Video"
             resolution="1920x1080"
             aspectClass="aspect-[16/9]"
@@ -475,11 +513,23 @@ export function ProjectDetailPage() {
 
             {/* Lightbox Content */}
             <div className="p-3 sm:p-4 flex items-center justify-center min-h-[250px] max-h-[75vh] overflow-hidden bg-black/60">
-              <img
-                src={activeMedia.url}
-                alt={activeMedia.title}
-                className="max-w-full max-h-[70vh] object-contain rounded-lg"
-              />
+              {getVideoEmbedUrl(activeMedia.url) ? (
+                <div className="w-full aspect-[16/9] max-h-[70vh] rounded-lg overflow-hidden">
+                  <iframe
+                    src={getVideoEmbedUrl(activeMedia.url)!}
+                    title={activeMedia.title}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                </div>
+              ) : (
+                <img
+                  src={activeMedia.url}
+                  alt={activeMedia.title}
+                  className="max-w-full max-h-[70vh] object-contain rounded-lg"
+                />
+              )}
             </div>
           </div>
         </div>

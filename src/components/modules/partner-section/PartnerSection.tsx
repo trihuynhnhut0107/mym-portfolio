@@ -46,21 +46,21 @@ export function PartnerSection({ partnerProgress = 0 }: PartnerSectionProps) {
             {SPONSOR_LOGOS.map((sponsor, idx) => (
               <div
                 key={idx}
-                className="relative flex items-center justify-center shrink-0 h-12 sm:h-16 md:h-20 lg:h-24"
+                className="relative flex items-center justify-center shrink-0 h-20 sm:h-20 md:h-22 lg:h-24"
               >
                 {/* Dark Logo (Active on White Background) */}
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
                   style={{ opacity: 1 - progress }}
-                  className="h-full w-auto max-w-[200px] sm:max-w-[280px] md:max-w-[340px] object-contain brightness-0 opacity-85 transition-opacity duration-150"
+                  className="h-full w-auto max-w-[280px] sm:max-w-[300px] md:max-w-[340px] object-contain brightness-0 opacity-85 transition-opacity duration-150"
                 />
                 {/* White Logo (Active on Blue Background) */}
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
                   style={{ opacity: progress }}
-                  className="absolute inset-0 h-full w-auto max-w-[200px] sm:max-w-[280px] md:max-w-[340px] object-contain brightness-0 invert opacity-95 transition-opacity duration-150"
+                  className="absolute inset-0 h-full w-auto max-w-[280px] sm:max-w-[300px] md:max-w-[340px] object-contain brightness-0 invert opacity-95 transition-opacity duration-150"
                 />
               </div>
             ))}
