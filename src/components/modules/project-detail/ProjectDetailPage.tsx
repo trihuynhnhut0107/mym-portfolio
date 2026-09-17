@@ -1,289 +1,19 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PROJECTS_DETAIL_DATA } from "@/data/projectsData";
 import type { ProjectDetail } from "@/data/projectsData";
-import { ArrowLeft, Play, X, Maximize2 } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { Footer } from "@/components/modules/footer";
-
-function getVideoEmbedUrl(url: string): string | null {
-  if (!url) return null;
-
-  // 1. YouTube
-  const ytMatch = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
-  );
-  if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=0&rel=0&modestbranding=1`;
-  }
-
-  // 2. Google Drive Video Preview
-  const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
-  );
-  if (gdriveMatch && gdriveMatch[1]) {
-    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`;
-  }
-
-  // 3. Vimeo
-  const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
-  if (vimeoMatch && vimeoMatch[1]) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=0`;
-  }
-
-  return null;
-}
-
-function getDirectVideoUrl(url?: string): string | null {
-  if (!url) return null;
-  const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
-  );
-  if (gdriveMatch && gdriveMatch[1]) {
-    return `https://drive.usercontent.google.com/download?id=${gdriveMatch[1]}&export=download`;
-  }
-  if (url.endsWith(".mp4") || url.endsWith(".webm") || url.includes("/download")) {
-    return url;
-  }
-  return null;
-}
-
-const PROJECT_VIDEO_THUMBNAILS: Record<string, string> = {
-  "1iUfXeqNqXsCUNN66TlSX2c53nDPnybeL": "/images/zen-tactics/1.jpg",
-  "1PsO8fLA9SUn6HzAfCUQCT4ETE3ztca3F": "/images/zen-tactics/17.jpg",
-  "1gJsr_2d2FDO2fGnXxOUk1_hiGYoCuqKs": "/images/zen-tactics/7.jpg",
-  "1--QabvWWob7rTjmlqAS5BO8VJIDddazM": "/images/zen-tactics/8.jpg",
-  "1wPp6zFc5Jzz4lDfGOZN3rHIKmk9WrzAa": "/images/modern-football/1.jpg",
-  "1hiiwMSHkMjRDs48cad0dCLHwZrXFumev": "/images/modern-football/17.jpg",
-  "1B5vdu5vfm48xU6MLpZ7xZ3QKkarEcdF1": "/images/modern-football/7.jpg",
-  "1PFRTMcV4vx8kqdQF30PV6SKNRgy0H7MW": "/images/modern-football/8.jpg",
-  "1U8AjTgqTH05V9PaUw__zEtPzsZgfyCID": "/images/zen-cine-esports/1.jpg",
-  "1IQi9wXG77nfLRBVDPnkQuP38TywEd8yL": "/images/zen-cine-esports/6.jpg",
-  "1hv5HhGLvnmBaBAAQ1akQd6PnKdSFhalf": "/images/tactics-duo/1.jpg",
-  "1iQfPlxsmZGWcdiTi4ThbP0c6hBwJSJiX": "/images/tactics-duo/7.jpg",
-  "1pjXf7hlm1-8QkPOhLbqoG6qsv5Gg39Q0": "/images/hlv-online/1.jpg",
-  "1zsZVLCyKolS3gVdRR0wYecKhwFjJ427f": "/images/hlv-online/17.jpg",
-  "1z7Hfv3E0Kgocw-lZVOvqFPZ7gVP4OKjI": "/images/hlv-online/7.jpg",
-  "1nwYORA8hSB9U7ALh6SH5pe69HvCAy8nf": "/images/hlv-online/8.jpg",
-  "1w88XRlAu0XT_fD1GNPMtuXQBGZ8gm3n8": "/images/hlv-online-classic/1.jpg",
-  "1EKgLB-TBbor5w_AFsNcPAYnPUbbiVSzK": "/images/hlv-online-classic/17.jpg",
-  "1kcT1b_QLJ9FkAJAtZ8pOxnfvXT6Ividt": "/images/hlv-online-classic/7.jpg",
-  "1lbHCnSD3z6yyr0ilcxK8AW3GhdFefeXN": "/images/hlv-online-classic/8.jpg",
-  "1cvZtNdX-n2coqjUjD8WGDqLtFwBSxB0T": "/images/hlv-onlive/1.jpg",
-  "1Xz1Kz5ppNhRzYzztR2baJzjDHVlXlFLB": "/images/cup-hoc-xem-bong/1.jpg",
-  "1DbZF75YQNZgmHSjpwKP7MOI_Rx3nUo7K": "/images/cup-hoc-xem-bong/7.jpg",
-  "1TQDqofOdKf6DpSWdXQUdRs3fvkJXnXhv": "/images/cup-hoc-xem-bong/8.jpg",
-};
-
-function getVideoThumbnail(url: string): string | null {
-  if (!url) return null;
-
-  // 1. YouTube
-  const ytMatch = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
-  );
-  if (ytMatch && ytMatch[1]) {
-    return `https://i.ytimg.com/vi/${ytMatch[1]}/hqdefault.jpg`;
-  }
-
-  // 2. Google Drive Video
-  const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
-  );
-  if (gdriveMatch && gdriveMatch[1]) {
-    const gid = gdriveMatch[1];
-    if (PROJECT_VIDEO_THUMBNAILS[gid]) {
-      return PROJECT_VIDEO_THUMBNAILS[gid];
-    }
-    return `https://lh3.googleusercontent.com/d/${gid}=w1920-h1080`;
-  }
-
-  return null;
-}
-
-interface MediaSlotProps {
-  url?: string;
-  thumbnail?: string;
-  type: "Video" | "Logo" | "Image";
-  resolution: "1920x1080" | "1000x1000" | "1080x1920";
-  aspectClass: string;
-  className?: string;
-  onOpen?: (url: string, title: string) => void;
-}
-
-function MediaSlot({
-  url,
-  thumbnail,
-  type,
-  resolution,
-  aspectClass,
-  className = "",
-  onOpen,
-}: MediaSlotProps) {
-  const isVideo = type === "Video";
-  const title = `${type} ${resolution}`;
-  const embedUrl = url ? getVideoEmbedUrl(url) : null;
-  const directVideoUrl = url ? getDirectVideoUrl(url) : null;
-  const computedThumbnail = thumbnail || (url ? getVideoThumbnail(url) : null);
-  const [isPlayingInline, setIsPlayingInline] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  if (!url) {
-    // Blue Tile Wireframe Placeholder Box
-    return (
-      <div
-        className={`relative bg-[#253BFF] border border-white/20 flex items-center justify-center overflow-hidden w-full ${aspectClass} ${className}`}
-      >
-        {/* Diagonal White X-lines */}
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none stroke-white/35"
-          strokeWidth="1.5"
-        >
-          <line x1="0" y1="0" x2="100%" y2="100%" />
-          <line x1="100%" y1="0" x2="0" y2="100%" />
-        </svg>
-
-        {/* Wireframe Label */}
-        <div className="relative z-10 flex flex-col items-center justify-center text-center text-white font-mono p-2 select-none">
-          <span className="text-xs sm:text-sm font-semibold leading-tight text-white/90">
-            {type}
-          </span>
-          <span className="text-xs sm:text-sm font-extrabold tracking-tight leading-tight text-white">
-            {resolution}
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  // 1. VIDEO SLOT WITH THUMBNAIL & PLAYBACK CONTROLS
-  if (isVideo || embedUrl) {
-    if (isPlayingInline && embedUrl) {
-      return (
-        <div
-          className={`relative group bg-[#05050A] overflow-hidden border border-white/20 w-full ${aspectClass} ${className}`}
-        >
-          <iframe
-            src={`${embedUrl}${embedUrl.includes("?") ? "&" : "?"}autoplay=1`}
-            title={title}
-            className="w-full h-full border-0 absolute inset-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-          {/* Top-Right Expand Button to open in Lightbox */}
-          <button
-            onClick={() => onOpen?.(url, title)}
-            className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white/90 hover:text-white transition-colors z-20 cursor-pointer shadow-lg backdrop-blur-sm"
-            title="Expand to theater view"
-          >
-            <Maximize2 className="w-4 h-4" />
-          </button>
-        </div>
-      );
-    }
-
-    return (
-      <div
-        onClick={() => {
-          if (embedUrl) {
-            setIsPlayingInline(true);
-          } else {
-            onOpen?.(url, title);
-          }
-        }}
-        className={`relative group bg-[#0A1244] overflow-hidden cursor-pointer border border-white/20 hover:border-blue-400/80 transition-all duration-300 w-full ${aspectClass} ${className}`}
-      >
-        {/* Frame at second 3 as video thumbnail */}
-        {directVideoUrl && !videoError ? (
-          <video
-            ref={videoRef}
-            src={`${directVideoUrl}#t=3`}
-            preload="auto"
-            muted
-            playsInline
-            onLoadedMetadata={(e) => {
-              const vid = e.currentTarget;
-              try {
-                if (vid.duration && vid.duration > 3) {
-                  vid.currentTime = 3;
-                } else if (vid.duration && vid.duration > 1) {
-                  vid.currentTime = 1;
-                }
-              } catch {}
-            }}
-            onSeeked={() => {
-              setVideoLoaded(true);
-            }}
-            onError={() => {
-              setVideoError(true);
-            }}
-            className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none ${
-              videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ) : null}
-
-        {/* Fallback image thumbnail or backdrop while seeking or on error */}
-        {(!videoLoaded || videoError || !directVideoUrl) && (
-          computedThumbnail ? (
-            <img
-              src={computedThumbnail}
-              alt={title}
-              loading="lazy"
-              decoding="async"
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          ) : (
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#0c1854] via-[#07103d] to-[#040926]" />
-          )
-        )}
-
-        {/* Ambient Dark Gradient Overlay */}
-        <div className="absolute inset-0 bg-black/25 group-hover:bg-black/35 transition-colors pointer-events-none" />
-
-        {/* Resolution Badge */}
-        <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/70 border border-white/20 text-white text-[10px] font-mono font-semibold tracking-wider pointer-events-none">
-          {resolution}
-        </div>
-
-        {/* Top-Right Expand Button to Lightbox */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpen?.(url, title);
-          }}
-          className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white/80 hover:text-white transition-colors opacity-0 group-hover:opacity-100 z-10 cursor-pointer shadow-md backdrop-blur-sm"
-          title="Open Theater View"
-        >
-          <Maximize2 className="w-3.5 h-3.5" />
-        </button>
-
-        {/* Center Play Icon with Glow */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#253BFF] group-hover:bg-[#3B50FF] text-white flex items-center justify-center shadow-[0_0_28px_rgba(37,99,235,0.7)] group-hover:scale-110 group-hover:shadow-[0_0_36px_rgba(59,130,246,0.9)] transition-all duration-300">
-            <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-white translate-x-0.5" />
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Real Image / Logo Display
-  return (
-    <div
-      onClick={() => onOpen?.(url, title)}
-      className={`relative group bg-[#253BFF] overflow-hidden cursor-pointer border border-white/20 w-full ${aspectClass} ${className}`}
-    >
-      <img
-        src={url}
-        alt={title}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-    </div>
-  );
-}
+import {
+  Layout23Slots,
+  Layout12Slots,
+  Layout13Slots,
+  Layout17Slots,
+  LayoutQuaBongCuoiNemNgon,
+  getVideoEmbedUrl,
+  getVideoThumbnail,
+} from "./layouts";
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -292,45 +22,6 @@ export function ProjectDetailPage() {
   const currentId =
     projectId && PROJECTS_DETAIL_DATA[projectId] ? projectId : "zen-tactics";
   const project: ProjectDetail = PROJECTS_DETAIL_DATA[currentId];
-
-  const logos =
-    project?.logos?.length
-      ? project.logos
-      : project?.media?.filter((m) => m.aspect === "square").map((m) => m.src) || [];
-
-  const verticalVideos =
-    project?.verticalVideos?.length
-      ? project.verticalVideos
-      : project?.media
-          ?.filter((m) => m.kind === "video" && m.aspect === "portrait")
-          .map((m) => m.src) || [];
-
-  const horizontalVideos =
-    project?.horizontalVideos?.length
-      ? project.horizontalVideos
-      : project?.videos?.length
-      ? project.videos
-      : project?.media
-          ?.filter(
-            (m) => (m.kind === "video" || m.kind === "embed") && m.aspect !== "portrait"
-          )
-          .map((m) => m.src) || [];
-
-  const verticalImages =
-    project?.verticalImages?.length
-      ? project.verticalImages
-      : project?.media
-          ?.filter((m) => m.kind === "image" && m.aspect === "portrait")
-          .map((m) => m.src) || [];
-
-  const horizontalImages =
-    project?.horizontalImages?.length
-      ? project.horizontalImages
-      : project?.media
-          ?.filter(
-            (m) => m.kind === "image" && m.aspect !== "square" && m.aspect !== "portrait"
-          )
-          .map((m) => m.src) || [];
 
   const [activeMedia, setActiveMedia] = useState<{
     url: string;
@@ -345,7 +36,10 @@ export function ProjectDetailPage() {
   };
 
   const handleOpenMedia = (url: string, title: string) => {
-    const isVid = title.toLowerCase().includes("video");
+    const isVid =
+      title.toLowerCase().includes("video") ||
+      Boolean(getVideoEmbedUrl(url)) ||
+      url.endsWith(".mp4");
     setActiveMedia({
       url,
       type: isVid ? "video" : "image",
@@ -432,7 +126,7 @@ export function ProjectDetailPage() {
           </motion.div>
         </div>
 
-        {/* Node Stats Bar (3 Connected Circular Nodes) */}
+        {/* Node Stats Bar */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -461,224 +155,73 @@ export function ProjectDetailPage() {
         </motion.div>
       </section>
 
-      {/* 3. MEDIA GRID LAYOUT (RESPONSIVE ZERO-GAP MATHEMATICAL ASPECT RATIO ALIGNMENT) */}
+      {/* 3. MEDIA GRID LAYOUT (MODULAR WIREFRAME-ACCURATE ZERO-GAP ALIGNMENT) */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.36, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-7xl mx-auto px-4 sm:px-12 pb-16 sm:pb-24 flex flex-col gap-0"
       >
-        {/* ROW 1: Video 1920x1080 (flex-[32]) + 2x Logo 1000x1000 Stack (flex-[9]) */}
-        <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
-          <div className="w-full md:w-auto md:flex-[32]">
-            <MediaSlot
-              url={horizontalVideos[0]}
-              type="Video"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-          <div className="w-full md:w-auto md:flex-[9] flex flex-row md:flex-col gap-0">
-            <MediaSlot
-              url={logos[0]}
-              type="Logo"
-              resolution="1000x1000"
-              aspectClass="aspect-square"
-              onOpen={handleOpenMedia}
-            />
-            <MediaSlot
-              url={logos[1]}
-              type="Logo"
-              resolution="1000x1000"
-              aspectClass="aspect-square"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-        </div>
-
-        {/* ROW 2: 3x Image 1920x1080 (Row of 3) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-0">
-          <MediaSlot
-            url={horizontalImages[0]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[1]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[2]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-        </div>
-
-        {/* ROW 3: 2x Video 1080x1920 (flex-[162]) + Image 1920x1080 (flex-[256]) */}
-        <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
-          <div className="w-full md:w-auto md:flex-[162] grid grid-cols-2 gap-0">
-            <MediaSlot
-              url={verticalVideos[0]}
-              type="Video"
-              resolution="1080x1920"
-              aspectClass="aspect-[9/16]"
-              onOpen={handleOpenMedia}
-            />
-            <MediaSlot
-              url={verticalVideos[1]}
-              type="Video"
-              resolution="1080x1920"
-              aspectClass="aspect-[9/16]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-          <div className="w-full md:w-auto md:flex-[256]">
-            <MediaSlot
-              url={horizontalImages[3]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-        </div>
-
-        {/* ROW 4: Complex Asymmetric 4 Columns (Perfect Height Matching) */}
-        <div className="flex flex-col md:flex-row w-full gap-0 items-stretch">
-          {/* Col 1: Stack of 2 Horizontal Images (flex-[384]) */}
-          <div className="w-full md:w-auto md:flex-[384] flex flex-col gap-0">
-            <MediaSlot
-              url={horizontalImages[4]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-            <MediaSlot
-              url={horizontalImages[5]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-
-          {/* Col 2: Vertical Image 1080x1920 (flex-[243]) */}
-          <div className="w-full md:w-auto md:flex-[243]">
-            <MediaSlot
-              url={verticalImages[0]}
-              type="Image"
-              resolution="1080x1920"
-              aspectClass="aspect-[9/16]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-
-          {/* Col 3: Stack of 3 Horizontal Images (flex-[256]) */}
-          <div className="w-full md:w-auto md:flex-[256] flex flex-col gap-0 justify-between">
-            <MediaSlot
-              url={horizontalImages[6]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-            <MediaSlot
-              url={horizontalImages[7]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-            <MediaSlot
-              url={horizontalImages[8]}
-              type="Image"
-              resolution="1920x1080"
-              aspectClass="aspect-[16/9]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-
-          {/* Col 4: Vertical Image 1080x1920 (flex-[243]) */}
-          <div className="w-full md:w-auto md:flex-[243]">
-            <MediaSlot
-              url={verticalImages[1]}
-              type="Image"
-              resolution="1080x1920"
-              aspectClass="aspect-[9/16]"
-              onOpen={handleOpenMedia}
-            />
-          </div>
-        </div>
-
-        {/* ROW 5: Full Width Feature Video 1920x1080 */}
-        <div className="w-full">
-          <MediaSlot
-            url={horizontalVideos[1]}
-            type="Video"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-        </div>
-
-        {/* ROW 6: 2x Image 1920x1080 (Row of 2) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-0">
-          <MediaSlot
-            url={horizontalImages[9]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[10]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-        </div>
-
-        {/* ROW 7: 4x Image 1920x1080 (Row of 4) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-0">
-          <MediaSlot
-            url={horizontalImages[11]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[12]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[13]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-          <MediaSlot
-            url={horizontalImages[14]}
-            type="Image"
-            resolution="1920x1080"
-            aspectClass="aspect-[16/9]"
-            onOpen={handleOpenMedia}
-          />
-        </div>
+        {(() => {
+          switch (project.layoutType) {
+            case 1:
+              return (
+                <Layout23Slots
+                  project={project}
+                  onOpenMedia={handleOpenMedia}
+                />
+              );
+            case 2:
+              return (
+                <Layout12Slots
+                  project={project}
+                  onOpenMedia={handleOpenMedia}
+                />
+              );
+            case 3:
+              return (
+                <Layout13Slots
+                  project={project}
+                  onOpenMedia={handleOpenMedia}
+                />
+              );
+            case 4:
+              return (
+                <Layout17Slots
+                  project={project}
+                  onOpenMedia={handleOpenMedia}
+                />
+              );
+            case 5:
+              return (
+                <LayoutQuaBongCuoiNemNgon
+                  project={project}
+                  onOpenMedia={handleOpenMedia}
+                />
+              );
+            case 6:
+            default:
+              return (
+                <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {project.media?.map((m, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() =>
+                        handleOpenMedia(m.src, `${project.title} - Showcase #${idx + 1}`)
+                      }
+                      className="relative group bg-[#0D0F18] border border-white/20 rounded-xl overflow-hidden cursor-pointer shadow-lg hover:border-blue-400/60 transition-all"
+                    >
+                      <img
+                        src={m.src}
+                        alt={m.title || project.title}
+                        className="w-full h-auto object-contain max-h-[70vh] transition-transform duration-500 group-hover:scale-[1.02]"
+                      />
+                    </div>
+                  ))}
+                </div>
+              );
+          }
+        })()}
       </motion.section>
 
       {/* 4. FOOTER */}
