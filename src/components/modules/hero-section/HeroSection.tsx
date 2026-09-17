@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 import { Marquee } from "@/components/ui/marquee";
 import { MymLogo } from "@/components/modules/mym-logo";
@@ -13,9 +14,41 @@ export function MeetYourMakerItem() {
   );
 }
 
+const COLS = 12;
+const ROWS = 3;
+
 export function HeroSection() {
+  const [windowDimensions, setWindowDimensions] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 1440,
+    height: typeof window !== "undefined" ? window.innerHeight : 900,
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowDimensions({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Compute tile dimensions so all 12 columns fit the window width perfectly
+  const tileWidth = windowDimensions.width / COLS;
+  const tileHeight = tileWidth;
+  const gridHeight = tileHeight * ROWS;
+
   return (
-    <section className="relative w-full min-h-screen overflow-hidden bg-transparent flex flex-col justify-center items-center">
+    <section
+      style={{
+        width: windowDimensions.width,
+        height: windowDimensions.height,
+      }}
+      className="relative w-full overflow-hidden bg-transparent flex flex-col justify-center items-center"
+    >
       {/* Center Block: Top Marquee + 3-Row Grid + Bottom Marquee */}
       <div className="w-full flex flex-col items-center">
         {/* Top Marquee Slider */}
@@ -25,9 +58,16 @@ export function HeroSection() {
           </Marquee>
         </div>
 
-        {/* Center Interactive Grid Pattern with exactly 3 rows (3 * 160px = 480px) */}
-        <div className="relative z-10 w-full h-[480px] overflow-hidden">
-          <InteractiveGridPattern width={160} height={160} squares={[32, 3]} />
+        {/* Center Interactive Grid Pattern with exactly 3 rows (3x12 full) */}
+        <div
+          className="relative z-10 w-full overflow-hidden"
+          style={{ height: gridHeight }}
+        >
+          <InteractiveGridPattern
+            width={tileWidth}
+            height={tileHeight}
+            squares={[COLS, ROWS]}
+          />
         </div>
 
         {/* Bottom Marquee Slider */}

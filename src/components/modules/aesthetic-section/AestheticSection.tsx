@@ -4,11 +4,11 @@ import { X, Play } from "lucide-react"
 
 interface ThumbnailItem {
   id: string
+  channel: string
   title: string
-  subtitle?: string
   image: string
   variant: "blue" | "red"
-  tag?: string
+  tag: "Player Analysis" | "Team Analysis" | "Match Analysis" | "Statistic Explanation"
   videoUrl?: string
 }
 
@@ -36,88 +36,96 @@ function getVideoEmbedUrl(url: string): string | null {
 const TOP_MARQUEE_ITEMS: ThumbnailItem[] = [
   {
     id: "top-1",
-    title: "KHÓ ĐUA VÔ ĐỊCH",
-    subtitle: "Zen Tactics • Chelsea",
-    image: "/logos/zen-tactics/1.jpg",
+    channel: "Zen Tactics",
+    title: "Phân tích Wesley Fofana",
+    image: "/images/creative-productions/1.jpg",
+    videoUrl: "https://drive.google.com/file/d/1SKhGuYTC8dm0yZPU8bVfPDaWUMz7fG3K/preview",
     variant: "blue",
-    tag: "PRE-SEASON",
+    tag: "Player Analysis",
   },
   {
     id: "top-2",
-    title: "SA BÀN NÀO!!!",
-    subtitle: "Arsenal vs Liverpool 3-2",
-    image: "/logos/zen-tactics/3.jpg",
+    channel: "HLV Online Classic",
+    title: "Sự nghiệp của Andrea Pirlo",
+    image: "/images/creative-productions/2.jpg",
+    videoUrl: "https://drive.google.com/file/d/1VdTOBuRlUn5f2w0Sp2T-XgQh8Vu5vSgk/preview",
     variant: "red",
-    tag: "MATCHDAY",
+    tag: "Player Analysis",
   },
   {
     id: "top-3",
-    title: "HẠ MÀN PREMIER LEAGUE",
-    subtitle: "Modern Football Analysis",
-    image: "/images/modern-football/1.jpg",
+    channel: "Modern Football",
+    title: "Giải mã Tỉ lệ kiểm soát bóng",
+    image: "/images/creative-productions/3.jpg",
+    videoUrl: "https://drive.google.com/file/d/1jqIFolqgIZrzUMhH9bXf0r6Vyp0eahsq/preview",
     variant: "blue",
-    tag: "ANALYSIS",
+    tag: "Statistic Explanation",
   },
   {
     id: "top-4",
-    title: "CHIẾN THUẬT DUO",
-    subtitle: "HLV Onlive Classic",
-    image: "/images/zen-tactics/471149121_885377707011664_4241553800759395865_n.jpg",
+    channel: "Cúp Học Xem Bóng",
+    title: "Phân tích trận đấu PSG 6-0 Bayern",
+    image: "/images/creative-productions/4.jpg",
+    videoUrl: "https://drive.google.com/file/d/1PHPErYdcTQ7ooGXF8dW24AJKH_sKHv0s/preview",
     variant: "red",
-    tag: "LIVE",
+    tag: "Match Analysis",
   },
   {
     id: "top-5",
-    title: "CUP HỌC XEM BÓNG",
-    subtitle: "Tập 1: Khởi Đầu Mới",
-    image: "/images/cup-hoc-xem-bong/Alexander_Isak_Liam_Delap_Woltermade_Liverpool_Chelsea_Newcastle.png",
-    videoUrl: "https://www.youtube.com/watch?v=mSsx4nwU9Kw",
+    channel: "Modern Football",
+    title: "Tài năng trẻ, Pedri & Musiala",
+    image: "/images/creative-productions/5.jpg",
+    videoUrl: "https://drive.google.com/file/d/1f3IzG5CmnkxUHxj_ZCQFOvCXjH7zAsfm/preview",
     variant: "blue",
-    tag: "EPISODE",
+    tag: "Player Analysis",
   },
 ]
 
 const BOTTOM_MARQUEE_ITEMS: ThumbnailItem[] = [
   {
-    id: "bot-1",
-    title: "SA BÀN NÀO!!!",
-    subtitle: "Tactics Analysis 3-2",
-    image: "/logos/zen-tactics/3.jpg",
+    id: "bot-6",
+    channel: "HLV Online",
+    title: "Phân tích Vua Tốc Độ, Gareth Bale",
+    image: "/images/creative-productions/6.jpg",
+    videoUrl: "https://drive.google.com/file/d/1NPRWzVfz5f4pCvO_GSvb3cYgNW9F4sRe/preview",
     variant: "red",
-    tag: "SPECIAL",
+    tag: "Player Analysis",
   },
   {
-    id: "bot-2",
-    title: "HẠ MÀN PREMIER LEAGUE",
-    subtitle: "Champion Edition",
-    image: "/images/modern-football/2.jpg",
+    id: "bot-7",
+    channel: "HLV Online Classic",
+    title: "Phân tích Vũ công Samba, Neymar Jr",
+    image: "/images/creative-productions/7.png",
+    videoUrl: "https://drive.google.com/file/d/1lMB5y_su4-5KFFRWZ89bzNzARB7VbyFg/preview",
     variant: "blue",
-    tag: "CHAMPION",
+    tag: "Player Analysis",
   },
   {
-    id: "bot-3",
-    title: "KHÓ ĐUA VÔ ĐỊCH",
-    subtitle: "Chelsea vs City",
-    image: "/logos/zen-tactics/1.jpg",
+    id: "bot-8",
+    channel: "Cúp Học Xem Bóng",
+    title: "Phân tích Arsenal mùa giải 2025/26",
+    image: "/images/creative-productions/8.png",
+    videoUrl: "https://drive.google.com/file/d/1qjJYwUlp9rV2gYhNzY2XJpzsnJYq8kpb/preview",
     variant: "red",
-    tag: "TACTICS",
+    tag: "Team Analysis",
   },
   {
-    id: "bot-4",
-    title: "MODERN FOOTBALL 2026",
-    subtitle: "Tactics Duo Review",
-    image: "/images/modern-football/4.jpg",
+    id: "bot-9",
+    channel: "HLV Online",
+    title: "Phân tích Zlatan Ibrahimovic",
+    image: "/images/creative-productions/9.jpg",
+    videoUrl: "https://drive.google.com/file/d/14SbKluVSzpQRPW3xzfWjqPNeO95Tdmsi/preview",
     variant: "blue",
-    tag: "NEW",
+    tag: "Player Analysis",
   },
   {
-    id: "bot-5",
-    title: "CUP HỌC HIGHLIGHTS",
-    subtitle: "Shorts Edition",
-    image: "/images/cup-hoc-xem-bong/6a.png",
-    videoUrl: "https://www.youtube.com/shorts/LEgSRAPu1V4",
+    id: "bot-10",
+    channel: "Cúp Học Xem Bóng",
+    title: "Phân tích Dominik Szoboszlai",
+    image: "/images/creative-productions/10.png",
+    videoUrl: "https://drive.google.com/file/d/1TntmDoa42FBCx38aPPPd4TqX7004oigY/preview",
     variant: "red",
-    tag: "SHORTS",
+    tag: "Player Analysis",
   },
 ]
 
@@ -153,7 +161,7 @@ function VideoCard({
       {/* Blue / Red Container Badge Accent */}
       {item.tag && (
         <div
-          className={`absolute top-4 right-4 px-3 py-1 rounded-md text-xs font-bold tracking-widest uppercase backdrop-blur-md border text-white ${
+          className={`absolute top-4 right-4 px-2.5 sm:px-3 py-1 rounded-md text-[10px] sm:text-xs font-bold tracking-wider uppercase backdrop-blur-md border text-white ${
             isBlue
               ? "bg-[#253BFF]/85 border-[#253BFF]"
               : "bg-[#FF253B]/85 border-[#FF253B]"
@@ -178,12 +186,10 @@ function VideoCard({
 
       {/* Bottom Content Info */}
       <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-left">
-        {item.subtitle && (
-          <div className="text-xs sm:text-sm font-semibold text-slate-300 uppercase tracking-widest mb-1">
-            {item.subtitle}
-          </div>
-        )}
-        <h4 className="font-funnel text-lg sm:text-2xl md:text-3xl font-extrabold text-white tracking-wide truncate">
+        <div className="text-xs sm:text-sm font-semibold text-slate-300 uppercase tracking-wider mb-1">
+          {item.channel}
+        </div>
+        <h4 className="font-funnel text-base sm:text-xl md:text-2xl font-extrabold text-white tracking-wide truncate">
           {item.title}
         </h4>
       </div>
@@ -334,7 +340,7 @@ export function AestheticSection() {
                   </span>
                 )}
                 <span className="text-xs sm:text-sm text-white font-medium truncate max-w-[200px] sm:max-w-none">
-                  {activeVideo.title} {activeVideo.subtitle && `• ${activeVideo.subtitle}`}
+                  {activeVideo.channel} • {activeVideo.title}
                 </span>
               </div>
               <button
@@ -347,7 +353,12 @@ export function AestheticSection() {
 
             {/* Modal Video Player */}
             <div className="p-2 sm:p-4 flex items-center justify-center bg-black/80">
-              <div className="w-full aspect-[16/9] max-h-[75vh] rounded-lg overflow-hidden bg-black flex items-center justify-center">
+              <div
+                className="w-full aspect-[16/9] max-h-[75vh] rounded-lg overflow-hidden bg-black flex items-center justify-center bg-cover bg-center"
+                style={{
+                  backgroundImage: activeVideo.image ? `url(${activeVideo.image})` : undefined,
+                }}
+              >
                 {embedUrl ? (
                   <iframe
                     src={embedUrl}
@@ -355,6 +366,14 @@ export function AestheticSection() {
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
+                  />
+                ) : activeVideo.videoUrl ? (
+                  <video
+                    src={activeVideo.videoUrl}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-contain"
                   />
                 ) : (
                   <img

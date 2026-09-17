@@ -1,5 +1,6 @@
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { useRef, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SkillDetailModal } from "./SkillDetailModal";
 import {
   SquarePen,
   Palette,
@@ -71,6 +72,13 @@ const SERVICES: ServiceItem[] = [
       "We manage the technical and creative demands of live broadcasting. Whether it is webinars, events, or real-time interactive content, we ensure a professional-grade stream with stable connectivity, high-quality audio/visuals, and seamless show flow.",
     icon: Radio,
   },
+];
+
+const SKILL_MODAL_SERVICES = [
+  { id: "srv-content", title: "Content Creator" },
+  { id: "srv-graphic", title: "Graphic Designer" },
+  { id: "srv-video", title: "Cinematic video editor" },
+  { id: "srv-livestream", title: "Livestream production" },
 ];
 
 interface TimelineEntry {
@@ -300,6 +308,13 @@ interface OverviewSectionProps {
 export function OverviewSection({
   overviewProgress = 1,
 }: OverviewSectionProps) {
+  const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null);
+  const handleCloseSkillModal = useCallback(() => {
+    setSelectedSkillId(null);
+  }, []);
+  const handleSelectSkillModal = useCallback((id: string) => {
+    setSelectedSkillId(id);
+  }, []);
   const containerRef = useRef<HTMLDivElement>(null);
   const node0Ref = useRef<HTMLDivElement>(null);
   const node1Ref = useRef<HTMLDivElement>(null);
@@ -341,7 +356,7 @@ export function OverviewSection({
 
             <div
               style={{ color: descColor }}
-              className="flex flex-col gap-3 text-sm sm:text-base font-roboto leading-relaxed text-center max-w-2xl transition-colors duration-150"
+              className="flex flex-col gap-3 text-sm sm:text-base font-roboto leading-relaxed text-justify-center max-w-2xl transition-colors duration-150"
             >
               <p>
                 Every great achievement begins as a fragment of imagination. But
@@ -372,16 +387,17 @@ export function OverviewSection({
                     gradientSize={300}
                     gradientFrom="#586CFF"
                     gradientTo="#253BFF"
-                    gradientColor="rgba(37, 59, 255, 0.22)"
-                    gradientOpacity={0.9}
+                    gradientColor="transparent"
+                    gradientOpacity={0}
                     cardClassName="bg-[#F6F7FD]/95 backdrop-blur-md h-full"
                     className="h-full w-full rounded-[32px] shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-white/60"
+                    onClick={() => setSelectedSkillId(item.id)}
                   >
                     <div
                       id={item.id}
                       className="p-8 sm:p-10 flex flex-col items-center justify-center text-center h-full min-h-[380px] sm:min-h-[420px]"
                     >
-                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#586CFF] via-[#253BFF] to-[#1627C4] flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-xl shadow-[#253BFF]/40 border border-white/30 mb-6 sm:mb-8 shrink-0">
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#586CFF] via-[#253BFF] to-[#1627C4] flex items-center justify-center transition-all duration-500 group-hover:scale-110 border border-white/30 mb-6 sm:mb-8 shrink-0">
                         <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white stroke-[1.75]" />
                       </div>
 
@@ -389,7 +405,7 @@ export function OverviewSection({
                         {item.title}
                       </h3>
 
-                      <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-roboto max-w-sm text-center">
+                      <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-roboto max-w-sm text-justify-center">
                         {item.description}
                       </p>
                     </div>
@@ -560,6 +576,24 @@ export function OverviewSection({
           </div>
         </div>
       </div>
+
+      {/* Interactive Skill Detail Modal: Mounted strictly on skill select, fully unloaded on close */}
+      <AnimatePresence>
+        {selectedSkillId && (
+          <SkillDetailModal
+            skillId={
+              ["srv-content", "srv-graphic", "srv-video", "srv-livestream"].includes(
+                selectedSkillId
+              )
+                ? selectedSkillId
+                : "srv-content"
+            }
+            onClose={handleCloseSkillModal}
+            onSelectSkill={handleSelectSkillModal}
+            servicesList={SKILL_MODAL_SERVICES}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

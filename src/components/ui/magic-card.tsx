@@ -16,6 +16,7 @@ interface MagicCardBaseProps {
   gradientSize?: number
   gradientFrom?: string
   gradientTo?: string
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void
 }
 
 interface MagicCardGradientProps extends MagicCardBaseProps {
@@ -64,6 +65,7 @@ export function MagicCard(props: MagicCardProps) {
     gradientFrom = "#9E7AFF",
     gradientTo = "#FE8BBB",
     mode = "gradient",
+    onClick,
   } = props
 
   const glowFrom = isOrbMode(props) ? (props.glowFrom ?? "#ee4f27") : "#ee4f27"
@@ -162,6 +164,7 @@ export function MagicCard(props: MagicCardProps) {
         "group relative isolate overflow-hidden rounded-[inherit] border border-transparent",
         className
       )}
+      onClick={onClick}
       onPointerMove={handlePointerMove}
       onPointerLeave={() => reset("leave")}
       onPointerEnter={() => reset("enter")}

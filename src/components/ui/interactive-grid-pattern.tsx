@@ -1,10 +1,93 @@
 import React, { useState } from "react";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_ZEN_IMAGES = [
-  "/logos/zen-tactics/1.jpg",
-  "/logos/zen-tactics/3.jpg",
-  "/logos/zen-tactics/4.jpg",
+interface ActiveTileData {
+  image: string;
+  label?: string;
+}
+
+// 3 rows x 12 columns grid definition matching the project design
+// Key is index: row * 12 + col
+const TILES_3X12: Record<number, ActiveTileData> = {
+  // Row 0
+  0: {
+    image: "/logos/project-logos/1_Zen Tactics.png",
+    label: "ZenTactics\n(Livestream Channel)",
+  },
+  2: {
+    image: "/logos/project-logos/2_Modern Football.png",
+    label: "Modern Football",
+  },
+  4: {
+    image: "/logos/project-logos/3_Zen Cine.png",
+    label: "Zen Cine",
+  },
+  6: {
+    image: "/logos/project-logos/4_Zen Esports.png",
+    label: "Zen Esport",
+  },
+  8: {
+    image: "/logos/project-logos/5_The Tactics Duo.png",
+    label: "The Tactics Duo",
+  },
+  10: {
+    image: "/logos/project-logos/6_Zen FIFA eWorld Cup.png",
+    label: "Zen FIFA eWorld Cup",
+  },
+
+  // Row 1
+  13: {
+    image: "/logos/project-logos/7_Zentleman.png",
+    label: "Zentlemen",
+  },
+  15: {
+    image: "/logos/project-logos/8_HLV Online.png",
+    label: "HLV Online",
+  },
+  17: {
+    image: "/logos/project-logos/9_HLV Online Classic.png",
+    label: "HLV Online Classic",
+  },
+  19: {
+    image: "/logos/project-logos/10_HLV Onlive.png",
+    label: "HLV Onlive",
+  },
+  21: {
+    image: "/logos/project-logos/11_Cup Hoc Xem Bong.png",
+    label: "Cup Hoc Xem Bong",
+  },
+  23: {
+    image: "/logos/project-logos/12_Qua Bong Cuoi.png",
+    label: "Qua Bong Cuoi",
+  },
+
+  // Row 2
+  24: {
+    image: "/logos/project-logos/Up coming.png",
+  },
+  26: {
+    image: "/logos/project-logos/Up coming.png",
+  },
+  28: {
+    image: "/logos/project-logos/13_Nem Ngon.png",
+    label: "Nem Ngon",
+  },
+  30: {
+    image: "/logos/project-logos/14_The Watcher.png",
+    label: "The Watcher",
+  },
+  32: {
+    image: "/logos/project-logos/Up coming.png",
+  },
+  34: {
+    image: "/logos/project-logos/Up coming.png",
+  },
+};
+
+const DEFAULT_IMAGES = [
+  "/logos/project-logos/1_Zen Tactics.png",
+  "/logos/project-logos/2_Modern Football.png",
+  "/logos/project-logos/3_Zen Cine.png",
 ];
 
 const DEFAULT_LABELS = ["Zen Tactics"];
@@ -29,10 +112,10 @@ function pseudoRandom(seed: number) {
 export function InteractiveGridPattern({
   width = 160,
   height = 160,
-  squares = [20, 12],
+  squares = [12, 3],
   className,
   squaresClassName,
-  images = DEFAULT_ZEN_IMAGES,
+  images = DEFAULT_IMAGES,
   labels = DEFAULT_LABELS,
   persistent = true,
   ...props
@@ -42,6 +125,8 @@ export function InteractiveGridPattern({
   const [flippedSquares, setFlippedSquares] = useState<Set<number>>(
     () => new Set(),
   );
+
+  const isDefault3x12 = horizontal === 12 && vertical === 3;
 
   const handleMouseEnter = (index: number) => {
     setHoveredSquare(index);
@@ -59,6 +144,7 @@ export function InteractiveGridPattern({
     <svg
       width={width * horizontal}
       height={height * vertical}
+      viewBox={`0 0 ${width * horizontal} ${height * vertical}`}
       className={cn(
         "absolute inset-0 h-full w-full pointer-events-auto",
         className,
@@ -83,12 +169,17 @@ export function InteractiveGridPattern({
           const isAboveLockedOpen =
             row > 0 &&
             (hoveredSquare === aboveIndex || flippedSquares.has(aboveIndex));
-          const aboveRandImgIndex =
-            row > 0
-              ? Math.floor(pseudoRandom(aboveIndex * 19 + 3) * images.length)
-              : 0;
+
           const label =
-            row > 0 ? labels[aboveRandImgIndex % labels.length] : "";
+            row > 0
+              ? isDefault3x12 && TILES_3X12[aboveIndex]?.label
+                ? TILES_3X12[aboveIndex].label
+                : labels[
+                    Math.floor(
+                      pseudoRandom(aboveIndex * 19 + 3) * labels.length,
+                    ) % labels.length
+                  ]
+              : "";
 
           return (
             <g
@@ -110,37 +201,38 @@ export function InteractiveGridPattern({
               {row > 0 && label && (
                 <text
                   x={x + 14}
-                  y={y + 24}
+                  y={label.includes("\n") ? y + 20 : y + 24}
                   className={cn(
                     "font-sans text-[11px] font-medium tracking-wide fill-white select-none pointer-events-none transition-opacity duration-300 ease-in-out",
                     isAboveLockedOpen ? "opacity-100" : "opacity-0",
                   )}
                 >
-                  {label}
+                  {label.split("\n").map((line, i) => (
+                    <tspan key={i} x={x + 14} dy={i === 0 ? 0 : 13}>
+                      {line}
+                    </tspan>
+                  ))}
                 </text>
-              )}
-              {/* Thin line between grid and bottom marquee for text */}
-              {row === vertical - 1 && (
-                <line
-                  x1={x}
-                  y1={y + height - 28}
-                  x2={x + width}
-                  y2={y + height - 28}
-                  className="stroke-white/10"
-                  strokeWidth={1}
-                />
               )}
             </g>
           );
         }
 
+        // Active tile
+        const configuredTile = isDefault3x12 ? TILES_3X12[index] : undefined;
         const randImgIndex = Math.floor(
           pseudoRandom(index * 19 + 3) * images.length,
         );
+        const imageSrc =
+          configuredTile?.image ?? images[randImgIndex % images.length];
+        const labelText =
+          configuredTile?.label ?? labels[randImgIndex % labels.length];
+
         // Deterministic diagonal striping pattern: ((row + col) / 2) % 2 === 1 for blue, 0 for white
         const isBlue = ((row + col) / 2) % 2 === 1;
-        const imageSrc = images[randImgIndex % images.length];
-        const labelText = labels[randImgIndex % labels.length];
+
+        // Bottom row active tile shows label at bottom if it has a label (e.g. Nem Ngon, The Watcher)
+        const hasBottomLabel = row === vertical - 1 && Boolean(labelText);
 
         return (
           <g
@@ -172,38 +264,36 @@ export function InteractiveGridPattern({
               x={x}
               y={y}
               width={width}
-              height={row === vertical - 1 ? height - 28 : height}
-              preserveAspectRatio="xMidYMid slice"
+              height={hasBottomLabel ? height - 28 : height}
+              preserveAspectRatio={hasBottomLabel ? "xMidYMid meet" : "xMidYMid slice"}
               className={cn(
                 "transition-opacity duration-300 ease-in-out pointer-events-none",
                 isLockedOpen ? "opacity-100" : "opacity-0",
               )}
             />
 
-            {/* Thin line between bottom grid cell and bottom marquee for text */}
-            {row === vertical - 1 && (
-              <line
-                x1={x}
-                y1={y + height - 28}
-                x2={x + width}
-                y2={y + height - 28}
-                className="stroke-white/10"
-                strokeWidth={1}
-              />
-            )}
-
-            {/* For the bottom row active cells with no row below them, show label right at the bottom edge */}
-            {row === vertical - 1 && (
-              <text
-                x={x + 14}
-                y={y + height - 10}
-                className={cn(
-                  "font-sans text-[11px] font-medium tracking-wide fill-white select-none pointer-events-none transition-opacity duration-300 ease-in-out",
-                  isLockedOpen ? "opacity-100" : "opacity-0",
-                )}
-              >
-                {labelText}
-              </text>
+            {/* For the bottom row active cells with label (Nem Ngon, The Watcher), show divider and label */}
+            {hasBottomLabel && (
+              <>
+                <line
+                  x1={x}
+                  y1={y + height - 28}
+                  x2={x + width}
+                  y2={y + height - 28}
+                  className="stroke-white/10"
+                  strokeWidth={1}
+                />
+                <text
+                  x={x + 14}
+                  y={y + height - 10}
+                  className={cn(
+                    "font-sans text-[11px] font-medium tracking-wide fill-white select-none pointer-events-none transition-opacity duration-300 ease-in-out",
+                    isLockedOpen ? "opacity-100" : "opacity-0",
+                  )}
+                >
+                  {labelText}
+                </text>
+              </>
             )}
           </g>
         );

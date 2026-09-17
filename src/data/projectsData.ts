@@ -1,520 +1,114 @@
+export type LayoutType = 1 | 2 | 3 | 4 | 5 | 6;
+export type MediaKind = "image" | "video" | "embed";
+
+export interface ProjectMedia {
+  kind: MediaKind;
+  src: string;
+  title?: string;
+  aspect?: "wide" | "square" | "portrait";
+}
+
 export interface ProjectDetail {
   id: string;
   year: string;
   title: string;
   tag: string;
-  category: string;
+  category: "youtube" | "events" | "outsource" | "website";
   description: string;
   vision: string;
   statsNodes: Array<{ value: string; label: string }>;
-  logos: string[]; // 1:1 square logo image paths
-  horizontalImages: string[]; // 16:9 horizontal image paths
-  verticalImages: string[]; // 9:16 vertical image paths
-  horizontalVideos: string[]; // 16:9 YouTube/Vimeo video embed URLs
-  verticalVideos: string[]; // 9:16 YouTube Shorts/Vimeo video embed URLs
-  videos: string[]; // 16:9 video embed URLs (backward compatibility)
+  layoutType: LayoutType;
+  media: ProjectMedia[];
+  runtimeChannels?: Array<"nem-ngon" | "qua-bong-cuoi">;
+  horizontalVideos?: string[];
+  videos?: string[];
+  logos?: string[];
+  horizontalImages?: string[];
+  verticalVideos?: string[];
+  verticalImages?: string[];
 }
+
+const image = (src: string, aspect: ProjectMedia["aspect"] = "wide", title?: string): ProjectMedia => ({ kind: "image", src, aspect, title });
+const video = (src: string, aspect: ProjectMedia["aspect"] = "wide", title?: string): ProjectMedia => ({ kind: "video", src, aspect, title });
+const embed = (src: string, aspect: ProjectMedia["aspect"] = "wide", title?: string): ProjectMedia => ({ kind: "embed", src, aspect, title });
+
+const stats = (values: [string, string][]) => values.map(([value, label]) => ({ value, label }));
+const numbered = (folder: string, names: string[], start = 1) => names.map((name, index) => image(`/images/${folder}/${name}`, "wide", `Media ${start + index}`));
 
 export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
   "zen-tactics": {
-    id: "zen-tactics",
-    year: "2021",
-    title: "Zen Tactics",
-    tag: "(Livestream Channel)",
-    category: "youtube",
-    description:
-      "The Zen system represents a multi-year journey of redefining digital sports and entertainment media in Vietnam. Born from a desire to move beyond basic streams, we have consistently pushed the boundaries of content creation—transitioning from pioneering regional tactical analysis to football broadcasting, large scale live esports events.",
-    vision:
-      "Our work—from pioneering high-end tactical boards in football to crossing down esports strategy—is designed to dismantle the barrier between 'hardcore information' and 'audience understanding'. By utilizing dynamic motion graphics and reliable storytelling, we turn technical analysis into a rewarding viewing experience.",
-    statsNodes: [
-      {
-            "value": "64K",
-            "label": "SUBS"
-      },
-      {
-            "value": "44K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "6.3M",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/zen-tactics/475056694_910641067818661_514620898112741635_n.jpg",
-      "/images/zen-tactics/471149121_885377707011664_4241553800759395865_n.jpg"
-],
-    horizontalImages: [
-      "/images/zen-tactics/261982058_231575285725246_9124063563937176591_n.jpg",
-      "/images/zen-tactics/247395811_211126724436769_8114731029458775560_n.jpg",
-      "/images/zen-tactics/262528981_231069332442508_717587687579017197_n.jpg",
-      "/images/zen-tactics/269757730_246400077576100_8305394240951439269_n.jpg",
-      "/images/zen-tactics/472179218_895044539378314_2909086318927515435_n.jpg",
-      "/images/zen-tactics/472426126_895709369311831_6879265775689816510_n.jpg",
-      "/images/zen-tactics/472599692_895716355977799_4787358625607068956_n.jpg",
-      "/images/zen-tactics/470668407_884758123740289_8534694881790031200_n.jpg"
-],
-    verticalImages: [],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1BmBzq737YhOF1f8wkfQYX0lHqCl4s9Sa/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1BmBzq737YhOF1f8wkfQYX0lHqCl4s9Sa/preview"
-],
+    id: "zen-tactics", year: "2021", title: "Zen Tactics", tag: "(Livestream Channel)", category: "youtube", layoutType: 1,
+    description: "A pioneering Vietnamese football channel built around visual tactical analysis, livestream production, and accessible storytelling.",
+    vision: "Turn complex football information into a rewarding viewing experience through clear motion, graphics, and storytelling.",
+    statsNodes: stats([["64K", "SUBS"], ["44K", "FOLLOW"], ["6.3M", "VIEWS"]]),
+    media: [video("https://drive.google.com/file/d/1iUfXeqNqXsCUNN66TlSX2c53nDPnybeL/preview"), image("/images/zen-tactics/2.png", "square"), image("/images/zen-tactics/3.png", "square"), ...numbered("zen-tactics", ["4.png", "5.png", "6.png", "9.png", "10.jpg", "11.jpg", "12.png", "13.png", "14.jpg", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("https://drive.google.com/file/d/1gJsr_2d2FDO2fGnXxOUk1_hiGYoCuqKs/preview", "portrait"), video("https://drive.google.com/file/d/1--QabvWWob7rTjmlqAS5BO8VJIDddazM/preview", "portrait"), video("https://drive.google.com/file/d/1PsO8fLA9SUn6HzAfCUQCT4ETE3ztca3F/preview")],
   },
   "modern-football": {
-    id: "modern-football",
-    year: "2022",
-    title: "Modern Football",
-    tag: "(Sport YT Channel)",
-    category: "youtube",
-    description:
-      "Modern Football (2022): The analytical successor to Zentactics. This project assumes the core analytical DNA of its predecessor while introducing a brand new visual identity. With a vibrant design language, Modern Football bridges today's complex tactical analysis with young audiences.",
-    vision:
-      "Our vision is to set the gold standard in sports media by making intricate tactical setups accessible and visually thrilling for the next generation of sports enthusiasts.",
-    statsNodes: [
-      {
-            "value": "24K",
-            "label": "SUBS"
-      },
-      {
-            "value": "30K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "4M",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/modern-football/475649955_944879514413744_7326433066322230252_n.jpg"
-],
-    horizontalImages: [
-      "/images/modern-football/4(1).jpg",
-      "/images/modern-football/5.jpg",
-      "/images/modern-football/8.jpg",
-      "/images/modern-football/7.jpg",
-      "/images/modern-football/8.png",
-      "/images/modern-football/1.jpg",
-      "/images/modern-football/2.jpg",
-      "/images/modern-football/3.jpg",
-      "/images/modern-football/4.jpg",
-      "/images/modern-football/5.png",
-      "/images/modern-football/9.png",
-      "/images/modern-football/1(1).jpg",
-      "/images/modern-football/6.jpg",
-      "/images/modern-football/10.png",
-      "/images/modern-football/11.png"
-],
-    verticalImages: [],
-    horizontalVideos: [],
-    verticalVideos: [],
-    videos: [],
+    id: "modern-football", year: "2022", title: "Modern Football", tag: "(Sport YT Channel)", category: "youtube", layoutType: 2,
+    description: "The analytical successor to Zen Tactics, pairing a new visual identity with football analysis for a younger audience.", vision: "Make intricate tactical setups accessible and visually compelling.",
+    statsNodes: stats([["24K", "SUBS"], ["30K", "FOLLOW"], ["4M", "VIEWS"]]),
+    media: [video("https://drive.google.com/file/d/1wPp6zFc5Jzz4lDfGOZN3rHIKmk9WrzAa/preview"), ...numbered("modern-football", ["2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.png", "9.jpg", "10.png", "11.jpg", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "23.png", "24.png"]), video("https://drive.google.com/file/d/1B5vdu5vfm48xU6MLpZ7xZ3QKkarEcdF1/preview"), video("https://drive.google.com/file/d/1PFRTMcV4vx8kqdQF30PV6SKNRgy0H7MW/preview"), video("https://drive.google.com/file/d/1hiiwMSHkMjRDs48cad0dCLHwZrXFumev/preview")],
+  },
+  "zen-cine-esports": {
+    id: "zen-cine-esports", year: "2022", title: "Zen Cine & Esports", tag: "(Other YT Channels)", category: "youtube", layoutType: 3,
+    description: "Cinematic channel work and esports event storytelling across trailers, roster graphics, and stage visuals.", vision: "Elevate visual storytelling in sports entertainment.",
+    statsNodes: stats([["10K", "SUBS"], ["500K", "VIEWS"], ["2", "FORMATS"]]),
+    media: [video("https://drive.google.com/file/d/1U8AjTgqTH05V9PaUw__zEtPzsZgfyCID/preview"), image("/images/zen-cine-esports/2.png", "square"), ...numbered("zen-cine-esports", ["3.png", "4.jpg.png", "5.jpg", "7.png", "8.png", "9.png", "10.png", "11.png", "12.png"]), video("https://drive.google.com/file/d/1IQi9wXG77nfLRBVDPnkQuP38TywEd8yL/preview")],
   },
   "tactics-duo": {
-    id: "tactics-duo",
-    year: "2022",
-    title: "The Tactics Duo",
-    tag: "(Outsource Channel)",
-    category: "outsource",
-    description:
-      "Focused on pre-match tactical breakdown and heavy graphic design execution. Achieved a peak traffic of over 600K views within a single year despite having modest subscriber counts.",
-    vision:
-      "Demonstrating that high production value, precise motion graphics, and deep football analysis can achieve extreme viral efficiency.",
-    statsNodes: [
-      {
-            "value": "2.9K",
-            "label": "SUBS"
-      },
-      {
-            "value": "4.7K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "646K",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/tactics-duo/472344380_577484088480153_5444369428971598159_n.jpg",
-      "/images/tactics-duo/473825573_586864197542142_1598442920759940212_n.jpg"
-],
-    horizontalImages: [
-      "/images/tactics-duo/472270521_576889831872912_1974374757049650913_n.jpg",
-      "/images/tactics-duo/476110603_597252313169997_211867323366721269_n.jpg",
-      "/images/tactics-duo/476345143_602266059335289_7880048792624729124_n.jpg",
-      "/images/tactics-duo/476786028_602269222668306_6944255767925836396_n.jpg",
-      "/images/tactics-duo/476462967_600730769488818_3386492867093511406_n.jpg",
-      "/images/tactics-duo/480907522_4081755948710606_7988917682884591118_n.jpg"
-],
-    verticalImages: [],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1X-ioaQIhzkVKC7xoFGOuIpjnMxYUutj5/preview",
-      "https://drive.google.com/file/d/1fNIiaI8r4lXnMxVbtN003gODtt9ScAMS/preview",
-      "https://drive.google.com/file/d/1PE8mjuZKnKyUHD1cqtiH1qCY7YM_qrUN/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1X-ioaQIhzkVKC7xoFGOuIpjnMxYUutj5/preview",
-      "https://drive.google.com/file/d/1fNIiaI8r4lXnMxVbtN003gODtt9ScAMS/preview",
-      "https://drive.google.com/file/d/1PE8mjuZKnKyUHD1cqtiH1qCY7YM_qrUN/preview"
-],
+    id: "tactics-duo", year: "2022", title: "The Tactics Duo", tag: "(Outsource Channel)", category: "outsource", layoutType: 2,
+    description: "Pre-match tactical breakdowns and graphic design production for an outsourced football channel.", vision: "Prove that precise motion graphics and deep analysis can drive reach.",
+    statsNodes: stats([["2.9K", "SUBS"], ["4.7K", "FOLLOW"], ["646K", "VIEWS"]]),
+    media: [video("https://drive.google.com/file/d/1hv5HhGLvnmBaBAAQ1akQd6PnKdSFhalf/preview"), ...numbered("tactics-duo", ["2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "8.jpg", "9.jpg", "10.png", "11.png", "12.png", "13.png"]), video("https://drive.google.com/file/d/1iQfPlxsmZGWcdiTi4ThbP0c6hBwJSJiX/preview")],
   },
-  "zen-fifa": {
-    id: "zen-fifa",
-    year: "2023",
-    title: "Zen FIFA23 eWorld Cup",
-    tag: "(Public Event)",
-    category: "events",
-    description:
-      "The first major Esports offline tournament organized under the Modern Football brand. One of the largest offline EA FC tournaments hosted in Ho Chi Minh City.",
-    vision:
-      "Unifying offline competitive gaming with high-production online broadcast graphics, setting new standards for grass-roots esports tournaments in Vietnam.",
-    statsNodes: [
-      {
-            "value": "100+",
-            "label": "PLAYERS"
-      },
-      {
-            "value": "8+",
-            "label": "TEAMS"
-      },
-      {
-            "value": "50K",
-            "label": "REACH"
-      }
-],
-    logos: [
-      "/images/zen-fifa-eworldcup/475778147_944879907747038_6124399279494855186_n.jpg",
-      "/images/zen-fifa-eworldcup/475872175_944879587747070_2330471353124767265_n.jpg"
-],
-    horizontalImages: [
-      "/images/zen-fifa-eworldcup/475558328_944879894413706_2573176993309625017_n.jpg",
-      "/images/zen-fifa-eworldcup/475655468_944879474413748_623354579659500435_n.jpg",
-      "/images/zen-fifa-eworldcup/475661500_944879914413704_933783975644155104_n.jpg",
-      "/images/zen-fifa-eworldcup/475677583_944879651080397_2228180341651416688_n.jpg",
-      "/images/zen-fifa-eworldcup/475730538_944879607747068_5917676286444930522_n.jpg",
-      "/images/zen-fifa-eworldcup/475849502_944879911080371_2697539055331079909_n.jpg",
-      "/images/zen-fifa-eworldcup/475831082_944879471080415_4984727195396708880_n.jpg",
-      "/images/zen-fifa-eworldcup/475681514_944879891080373_1922671567771122179_n.jpg",
-      "/images/zen-fifa-eworldcup/475684476_944879924413703_8127607533985552413_n.jpg"
-],
-    verticalImages: [],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1EY5LkkhEJWhI05eLJ5dM3CTHEwp6vDOh/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1EY5LkkhEJWhI05eLJ5dM3CTHEwp6vDOh/preview"
-],
+  "zen-fifa-eworldcup": {
+    id: "zen-fifa-eworldcup", year: "2023", title: "Zen FIFA eWorld Cup", tag: "(Public Event)", category: "events", layoutType: 3,
+    description: "An offline EA FC tournament with broadcast graphics and event media produced under the Modern Football brand.", vision: "Unify competitive gaming with high-production event coverage.",
+    statsNodes: stats([["100+", "PLAYERS"], ["8+", "TEAMS"], ["50K", "REACH"]]),
+    media: [image("/images/zen-fifa-eworldcup/2.png", "square"), ...numbered("zen-fifa-eworldcup", ["3.jpg", "4.jpg", "5.jpg", "6.jpg.png", "7.jpg", "8.jpg", "9.jpg", "10.png", "11.png", "12.png", "13.jpg", "14.jpg", "15.jpg", "16.jpg", "17.jpg"])],
+  },
+  zentlemen: {
+    id: "zentlemen", year: "2022", title: "Zentlemen", tag: "(Website)", category: "website", layoutType: 6,
+    description: "A website project presented through its approved editorial screenshots.", vision: "Interactive website exploration is reserved for a future phase.",
+    statsNodes: stats([["WEB", "EXPERIENCE"], ["UI", "DESIGN"], ["2022", "LAUNCH"]]),
+    media: [image("/images/zentlemen/image.png"), image("/images/zentlemen/image copy.png", "portrait")],
   },
   "hlv-online": {
-    id: "hlv-online",
-    year: "2023",
-    title: "HLV Online",
-    tag: "(Sport YT Channel)",
-    category: "youtube",
-    description:
-      "HLV Online represents our signature milestone and most successful sport media brand to date. By combining modern visual motion graphics, deep-dive tactical analytics, and interactive storytelling.",
-    vision:
-      "To redefine digital football media by proving that tactical depth and mass accessibility are not mutually exclusive.",
-    statsNodes: [
-      {
-            "value": "164K",
-            "label": "SUBS"
-      },
-      {
-            "value": "133K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "39M",
-            "label": "VIEWS"
-      }
-],
-    logos: [],
-    horizontalImages: [
-      "/images/hlv-onlive/2.png",
-      "/images/hlv-onlive/12.jpg",
-      "/images/hlv-onlive/13.jpg",
-      "/images/hlv-onlive/31.png",
-      "/images/hlv-onlive/epl 3.png",
-      "/images/hlv-onlive/pre-epl 2.png"
-],
-    verticalImages: [],
-    horizontalVideos: [],
-    verticalVideos: [],
-    videos: [],
+    id: "hlv-online", year: "2023", title: "HLV Online", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,
+    description: "MYM's signature sports-media brand combining modern motion graphics, tactical analysis, and interactive storytelling.", vision: "Prove that tactical depth and mass accessibility can coexist.",
+    statsNodes: stats([["164K", "SUBS"], ["133K", "FOLLOW"], ["39M", "VIEWS"]]),
+    media: [video("https://drive.google.com/file/d/1pjXf7hlm1-8QkPOhLbqoG6qsv5Gg39Q0/preview"), image("/images/hlv-online/2.png", "square"), image("/images/hlv-online/3.png", "square"), ...numbered("hlv-online", ["4.png", "5.png", "6.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("https://drive.google.com/file/d/1z7Hfv3E0Kgocw-lZVOvqFPZ7gVP4OKjI/preview", "portrait"), video("https://drive.google.com/file/d/1nwYORA8hSB9U7ALh6SH5pe69HvCAy8nf/preview", "portrait"), video("https://drive.google.com/file/d/1zsZVLCyKolS3gVdRR0wYecKhwFjJ427f/preview")],
   },
-  "hlv-classic": {
-    id: "hlv-classic",
-    year: "2024",
-    title: "HLV Online Classic",
-    tag: "(Sport YT Channel)",
-    category: "youtube",
-    description:
-      "A retro, narrative-driven approach to iconic football moments. Focusing on nostalgic events to restore pure, emotional human connection with dedicated football audiences.",
-    vision:
-      "Restoring pure human connection and emotional storytelling to iconic moments in sports history.",
-    statsNodes: [
-      {
-            "value": "31K",
-            "label": "SUBS"
-      },
-      {
-            "value": "3.3M",
-            "label": "VIEWS"
-      },
-      {
-            "value": "93K",
-            "label": "HOURS"
-      }
-],
-    logos: [
-      "/images/hlv-online-classic/Logo.png",
-      "/images/hlv-online-classic/Paul Scholes.png"
-],
-    horizontalImages: [
-      "/images/hlv-online-classic/Youtube banner.png",
-      "/images/hlv-online-classic/Bayern_Munnich_Ribery_Robben.png",
-      "/images/hlv-online-classic/Ronaldo_Man_United_Rooney.png",
-      "/images/hlv-online-classic/Spain 2026 Cassilas Inesta Xavi.png",
-      "/images/hlv-online-classic/Facebook banner.png"
-],
-    verticalImages: [
-      "/images/hlv-online-classic/1.png",
-      "/images/hlv-online-classic/2.png",
-      "/images/hlv-online-classic/3.png",
-      "/images/hlv-online-classic/Neymar.png"
-],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1KkZDjVR60RkNWHasKOMarpPfRljOARWG/preview",
-      "https://drive.google.com/file/d/1r2-zQ_aJm2FcJHY9n9jSLBUEDELSAi16/preview",
-      "https://drive.google.com/file/d/1FCqEmeifmNHIzHeXBhH7QL013GqQnaxS/preview",
-      "https://drive.google.com/file/d/1hvkIKuwcYCvKNiJlSn_s0-lPMPzGP3px/preview",
-      "https://drive.google.com/file/d/1cCy4b9gVIZ6gQtFw9ZfBAl-RjOfsI9S1/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1KkZDjVR60RkNWHasKOMarpPfRljOARWG/preview",
-      "https://drive.google.com/file/d/1r2-zQ_aJm2FcJHY9n9jSLBUEDELSAi16/preview",
-      "https://drive.google.com/file/d/1FCqEmeifmNHIzHeXBhH7QL013GqQnaxS/preview",
-      "https://drive.google.com/file/d/1hvkIKuwcYCvKNiJlSn_s0-lPMPzGP3px/preview",
-      "https://drive.google.com/file/d/1cCy4b9gVIZ6gQtFw9ZfBAl-RjOfsI9S1/preview"
-],
+  "hlv-online-classic": {
+    id: "hlv-online-classic", year: "2024", title: "HLV Online Classic", tag: "(Sport YT Channel)", category: "youtube", layoutType: 2,
+    description: "A retro, narrative-led channel focused on iconic football moments and emotional audience connection.", vision: "Restore human connection to sports history.",
+    statsNodes: stats([["31K", "SUBS"], ["3.3M", "VIEWS"], ["93K", "HOURS"]]),
+    media: [video("https://drive.google.com/file/d/1w88XRlAu0XT_fD1GNPMtuXQBGZ8gm3n8/preview"), ...numbered("hlv-online-classic", ["2.png", "3.png", "4.jpg", "5.png", "6.jpg", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.jpg", "21.jpg", "22.jpg", "23.jpg"]), video("https://drive.google.com/file/d/1kcT1b_QLJ9FkAJAtZ8pOxnfvXT6Ividt/preview"), video("https://drive.google.com/file/d/1lbHCnSD3z6yyr0ilcxK8AW3GhdFefeXN/preview"), video("https://drive.google.com/file/d/1EKgLB-TBbor5w_AFsNcPAYnPUbbiVSzK/preview")],
   },
-  "cup-hoc": {
-    id: "cup-hoc",
-    year: "2025",
-    title: "Cup Hoc Xem Bong",
-    tag: "(Sport YT Channel)",
-    category: "youtube",
-    description:
-      "A reality show format dedicated to finding and nurturing young commentary and analytical talent in football esports, forming the foundation for the next media generation.",
-    vision:
-      "Building an incubator ecosystem for high-potential digital sports creators.",
-    statsNodes: [
-      {
-            "value": "11K",
-            "label": "SUBS"
-      },
-      {
-            "value": "51K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "1.6M",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/cup-hoc-xem-bong/Mark logo.png"
-],
-    horizontalImages: [
-      "/images/cup-hoc-xem-bong/Youtube banner.png",
-      "/images/cup-hoc-xem-bong/Alexander_Isak_Liam_Delap_Woltermade_Liverpool_Chelsea_Newcastle.png",
-      "/images/cup-hoc-xem-bong/Bayern_Munnich_Ribery_Robben.png",
-      "/images/cup-hoc-xem-bong/Bản sao của Arsenal_va_Bayern_nhu_nay_thi_sao_Chelsea_an_uoc_ay.png",
-      "/images/cup-hoc-xem-bong/Bản sao của Tat_ca_tai_Isak.png",
-      "/images/cup-hoc-xem-bong/Mathues Cunha Ryan Cherki Joao Pedro(1).png",
-      "/images/cup-hoc-xem-bong/Salah.png",
-      "/images/cup-hoc-xem-bong/Tonali Bruno Guimares Man United(1).png",
-      "/images/cup-hoc-xem-bong/fb banner.png"
-],
-    verticalImages: [
-      "/images/cup-hoc-xem-bong/2a (1).png",
-      "/images/cup-hoc-xem-bong/4a.png",
-      "/images/cup-hoc-xem-bong/6a.png"
-],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1GBBCjYaqAv9RpOkuL4cXars0tWQAWvpC/preview",
-      "https://drive.google.com/file/d/1IpAO8bPbEZsL2IvxdvAoejwhzt4MQj60/preview"
-],
-    verticalVideos: [
-      "https://drive.google.com/file/d/17PHMMoD_91Fy5YJQjIGxmzidAZA-BofZ/preview",
-      "https://drive.google.com/file/d/1xhLwyGad4KIETNm9qalEEFKUalYyK9En/preview",
-      "https://drive.google.com/file/d/137ydQGEdjINYz_5D1GCqotftrBUcmRT-/preview",
-      "https://drive.google.com/file/d/1k3jWs8IW9pHBdEXurtt22lGAI_fz2bIc/preview",
-      "https://drive.google.com/file/d/1TnqWOxehDuOyAgZDuAMk4gp_ZixkaZsX/preview",
-      "https://drive.google.com/file/d/1L4-QEDzX90ntq4k5SdunORT8UQ9NZr3r/preview",
-      "https://drive.google.com/file/d/1BmtlBOcT3fEyD3pB-VFtyo1wa1I6-yZl/preview"
-],
-    videos: [
-      "https://drive.google.com/file/d/1GBBCjYaqAv9RpOkuL4cXars0tWQAWvpC/preview",
-      "https://drive.google.com/file/d/1IpAO8bPbEZsL2IvxdvAoejwhzt4MQj60/preview"
-],
+  "hlv-onlive": {
+    id: "hlv-onlive", year: "2024", title: "HLV Onlive", tag: "(Livestream Channel)", category: "youtube", layoutType: 4,
+    description: "A live-broadcast package featuring studio overlays, graphics, and matchday coverage.", vision: "Create a coherent visual system for live football production.",
+    statsNodes: stats([["LIVE", "BROADCAST"], ["14", "ASSETS"], ["2024", "ERA"]]),
+    media: [video("https://drive.google.com/file/d/1cvZtNdX-n2coqjUjD8WGDqLtFwBSxB0T/preview"), image("/images/hlv-onlive/2.png", "square"), ...numbered("hlv-onlive", ["3.png", "4.png", "5.png", "6.png"]), embed("https://www.youtube.com/live/h4IuJqvGYZY"), ...numbered("hlv-onlive", ["8.png", "9.png", "10.png", "11.png", "12.jpg", "13.png"])],
+  },
+  "cup-hoc-xem-bong": {
+    id: "cup-hoc-xem-bong", year: "2025", title: "Cúp Học Xem Bóng", tag: "(Sport YT Channel)", category: "youtube", layoutType: 5,
+    description: "A reality-show format for emerging football commentary and analysis talent.", vision: "Build an ecosystem for high-potential sports-media creators.",
+    statsNodes: stats([["11K", "SUBS"], ["51K", "FOLLOW"], ["1.6M", "VIEWS"]]),
+    media: [video("https://drive.google.com/file/d/1Xz1Kz5ppNhRzYzztR2baJzjDHVlXlFLB/preview"), ...numbered("cup-hoc-xem-bong", ["2.png", "3.png", "4.png", "5.png", "6.png"]), video("https://drive.google.com/file/d/1DbZF75YQNZgmHSjpwKP7MOI_Rx3nUo7K/preview"), video("https://drive.google.com/file/d/1TQDqofOdKf6DpSWdXQUdRs3fvkJXnXhv/preview"), ...numbered("cup-hoc-xem-bong", ["9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png"]), embed("https://www.youtube.com/watch?v=ep_oOmFukpY"), ...numbered("cup-hoc-xem-bong", ["18.png", "19.png", "20.png", "21.png", "22.png", "23.png"])],
+  },
+  "qua-bong-cuoi-nem-ngon": {
+    id: "qua-bong-cuoi-nem-ngon", year: "2025", title: "Quả Bóng Cười, Ném Ngon…", tag: "(Outsource Channels)", category: "outsource", layoutType: 5,
+    description: "Two content channels presented together: Ném Ngon and Quả Bóng Cười.", vision: "Match entertaining channel content with clear, platform-native presentation.",
+    statsNodes: stats([["2", "CHANNELS"], ["TOP", "VIDEOS"], ["2025", "ERA"]]),
+    media: [image("/images/qua-bong-cuoi-nem-ngon/1.png"), image("/images/qua-bong-cuoi-nem-ngon/2.png"), image("/images/qua-bong-cuoi-nem-ngon/3.png")], runtimeChannels: ["nem-ngon", "qua-bong-cuoi"],
   },
   "the-watcher": {
-    id: "the-watcher",
-    year: "2025",
-    title: "The Watcher",
-    tag: "(Website & Platform)",
-    category: "website",
-    description:
-      "A premium subscription-based editorial blog platform designed with a dark, minimalist aesthetic, smooth scroll interactions, and a custom admin CMS panel.",
-    vision:
-      "Merging editorial journalism with modern software engineering for next-generation digital publishing.",
-    statsNodes: [
-      {
-            "value": "100%",
-            "label": "CUSTOM UI"
-      },
-      {
-            "value": "CMS",
-            "label": "ADMIN"
-      },
-      {
-            "value": "2025",
-            "label": "LAUNCH"
-      }
-],
-    logos: [],
-    horizontalImages: [
-      "/images/zentlemen/image.png"
-],
-    verticalImages: [
-      "/images/zentlemen/image copy.png"
-],
-    horizontalVideos: [],
-    verticalVideos: [],
-    videos: [],
-  },
-  "zen-cine": {
-    id: "zen-cine",
-    year: "2022",
-    title: "Zen Cine",
-    tag: "(Media Channel)",
-    category: "youtube",
-    description:
-      "Cinematic and narrative digital entertainment experiences.",
-    vision:
-      "Elevating visual storytelling standards in sports entertainment.",
-    statsNodes: [
-      {
-            "value": "10K",
-            "label": "SUBS"
-      },
-      {
-            "value": "500K",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/zen-cine/295828058_104244065711818_4950345619294456168_n.jpg",
-      "/images/zen-cine/470170245_553844847418402_5608481775455364546_n.jpg"
-],
-    horizontalImages: [
-      "/images/zen-cine/471489345_564682986334588_7285750892335056990_n.jpg",
-      "/images/zen-cine/297812997_113979661404925_4704299858387917655_n.jpg",
-      "/images/zen-cine/294980201_104244262378465_1188009827340525302_n.png"
-],
-    verticalImages: [],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1gaMR0mp7p7knl4-JGRluUhsophOF61Si/preview",
-      "https://drive.google.com/file/d/1wAHknHEvsWMs2qOX7lfjWLOwhTjFzkUd/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1gaMR0mp7p7knl4-JGRluUhsophOF61Si/preview",
-      "https://drive.google.com/file/d/1wAHknHEvsWMs2qOX7lfjWLOwhTjFzkUd/preview"
-],
-  },
-  "zen-esport": {
-    id: "zen-esport",
-    year: "2023",
-    title: "Zen Esport",
-    tag: "(Esports Event)",
-    category: "events",
-    description:
-      "High-production esports tournament coverage and motion design.",
-    vision:
-      "Pioneering state of the art esports live broadcasts.",
-    statsNodes: [
-      {
-            "value": "50K",
-            "label": "REACH"
-      },
-      {
-            "value": "10+",
-            "label": "EVENTS"
-      }
-],
-    logos: [],
-    horizontalImages: [
-      "/images/zen-esport/2.png",
-      "/images/zen-esport/3.png",
-      "/images/zen-esport/4.png",
-      "/images/zen-esport/5.png",
-      "/images/zen-esport/6.png",
-      "/images/zen-esport/7.png",
-      "/images/zen-esport/lol.png",
-      "/images/zen-esport/291620735_137020969003837_1358084763908439614_n.jpg"
-],
-    verticalImages: [
-      "/images/zen-esport/475744360_638204002218862_4860111482180158439_n.jpg"
-],
-    horizontalVideos: [
-      "https://drive.google.com/file/d/1DwpwWIE2IbBzCT5yLF-IzF5RXL9PJpb0/preview",
-      "https://drive.google.com/file/d/1pO3BPxxz96BukbK0jWPFCNd6hR__zHwG/preview"
-],
-    verticalVideos: [],
-    videos: [
-      "https://drive.google.com/file/d/1DwpwWIE2IbBzCT5yLF-IzF5RXL9PJpb0/preview",
-      "https://drive.google.com/file/d/1pO3BPxxz96BukbK0jWPFCNd6hR__zHwG/preview"
-],
-  },
-  "lien-minh-fun": {
-    id: "lien-minh-fun",
-    year: "2023",
-    title: "Lien Minh Fun",
-    tag: "(Community Channel)",
-    category: "youtube",
-    description:
-      "Gaming community content and creative motion design assets.",
-    vision:
-      "Connecting gaming communities through innovative visual design.",
-    statsNodes: [
-      {
-            "value": "15K",
-            "label": "FOLLOW"
-      },
-      {
-            "value": "1M",
-            "label": "VIEWS"
-      }
-],
-    logos: [
-      "/images/lien-minh-fun/480674703_623789863730100_6669545896043966229_n.jpg",
-      "/images/lien-minh-fun/481240467_624607186981701_2269220079689298231_n.jpg"
-],
-    horizontalImages: [],
-    verticalImages: [],
-    horizontalVideos: [],
-    verticalVideos: [
-      "https://drive.google.com/file/d/17CpLNlGagrRnDDbx-d56OvtyO5iCxS6v/preview",
-      "https://drive.google.com/file/d/141QiVu1DgT2doyvLsTi9WVRiXCLElg1g/preview"
-],
-    videos: [],
+    id: "the-watcher", year: "2025", title: "The Watcher", tag: "(Website)", category: "website", layoutType: 6,
+    description: "A website project awaiting the interactive demonstration requested in the review.", vision: "The present phase keeps an editorial preview until the source website is supplied.",
+    statsNodes: stats([["WEB", "EXPERIENCE"], ["UI", "DESIGN"], ["2025", "LAUNCH"]]),
+    media: [image("/logos/project-logos/14_The Watcher.png", "square")],
   },
 };
+
+export const PROJECT_IDS = Object.keys(PROJECTS_DETAIL_DATA);
