@@ -397,12 +397,36 @@ function MainPortfolioPage() {
   );
 }
 
+function GlobalMediaCoordinator() {
+  useEffect(() => {
+    // When any HTML5 video starts playing, pause all other videos to prevent audio/video overlap
+    const handleGlobalPlay = (e: Event) => {
+      const target = e.target as HTMLMediaElement;
+      if (!target || target.tagName?.toLowerCase() !== "video") return;
+      const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+      allVideos.forEach((vid) => {
+        if (vid !== target && !vid.paused) {
+          vid.pause();
+        }
+      });
+    };
+
+    document.addEventListener("play", handleGlobalPlay, true);
+    return () => {
+      document.removeEventListener("play", handleGlobalPlay, true);
+    };
+  }, []);
+
+  return null;
+}
+
 function App() {
   const location = useLocation();
 
   return (
     <>
       <ScrollToTop />
+      <GlobalMediaCoordinator />
       <PageTransitionLoader />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>

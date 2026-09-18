@@ -6,12 +6,16 @@ import type { SlotResolvedMedia } from "./slotResolver";
 export interface Layout12SlotsProps {
   project: ProjectDetail;
   slots?: Record<number, SlotResolvedMedia>;
+  playingSlotId?: number | null;
+  onStartPlaySlot?: (slotId: number | null) => void;
   onOpenMedia?: (url: string, title: string) => void;
 }
 
 export function Layout12Slots({
   project,
   slots,
+  playingSlotId,
+  onStartPlaySlot,
   onOpenMedia,
 }: Layout12SlotsProps) {
   const getSlot = (
@@ -34,6 +38,8 @@ export function Layout12Slots({
         thumbnail={resolved?.thumbnail}
         title={resolved?.title}
         className={className}
+        isPlayingInline={playingSlotId === id}
+        onStartPlay={onStartPlaySlot}
         onOpen={onOpenMedia}
       />
     );

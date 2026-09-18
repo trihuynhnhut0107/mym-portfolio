@@ -1402,10 +1402,24 @@ export function SkillDetailModal({
   );
 
   const handleOpenMedia = useCallback((media: ActiveMediaItem) => {
+    // Pause any other playing videos on the page
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
     setActiveMedia(media);
   }, []);
 
   const handleCloseLightbox = useCallback(() => {
+    // Pause any modal videos before closing
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
     setActiveMedia(null);
   }, []);
 

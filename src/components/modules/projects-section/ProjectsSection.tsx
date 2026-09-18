@@ -66,6 +66,26 @@ const ZEN_TACTICS_PROJECTS: ProjectItem[] = [
     ],
   },
   {
+    id: "zen-cine-esports",
+    year: "2022",
+    title: "Zen Cine & Esports",
+    tag: "(Other YT Channels)",
+    category: "youtube",
+    accentColor: "#253BFF",
+    description:
+      "Cinematic channel work and esports storytelling across trailers, match highlights, roster graphics, and broadcast packages.",
+    stats: [
+      { icon: "play", value: "10K+", label: "Subscribers", isPrimary: true },
+      { icon: "eye", value: "500K+", label: "Views", isPrimary: true },
+      { icon: "users", value: "2", label: "Formats" },
+    ],
+    images: [
+      "/images/zen-cine-esports/2.png",
+      "/images/zen-cine-esports/3.png",
+      "/images/zen-cine-esports/5.jpg",
+    ],
+  },
+  {
     id: "tactics-duo",
     year: "2022",
     title: "The Tactics Duo",
@@ -87,7 +107,7 @@ const ZEN_TACTICS_PROJECTS: ProjectItem[] = [
     ],
   },
   {
-    id: "zen-fifa",
+    id: "zen-fifa-eworldcup",
     year: "2023",
     title: "Zen FIFA23 eWorld Cup",
     tag: "(Public Event)",
@@ -104,6 +124,25 @@ const ZEN_TACTICS_PROJECTS: ProjectItem[] = [
       "/images/zen-fifa-eworldcup/475831082_944879471080415_4984727195396708880_n.jpg",
       "/images/zen-fifa-eworldcup/475872175_944879587747070_2330471353124767265_n.jpg",
       "/images/zen-fifa-eworldcup/475684476_944879924413703_8127607533985552413_n.jpg",
+    ],
+  },
+  {
+    id: "zentlemen",
+    year: "2022",
+    title: "Zentlemen",
+    tag: "(Website)",
+    category: "website",
+    accentColor: "#253BFF",
+    description:
+      "A digital lifestyle and fashion publication platform designed with editorial precision, refined typography, and responsive layouts.",
+    stats: [
+      { icon: "eye", value: "Editorial", label: "UI / UX", isPrimary: true },
+      { icon: "clock", value: "2022", label: "Launch", isPrimary: true },
+      { icon: "users", value: "Web", label: "Platform" },
+    ],
+    images: [
+      "/images/zentlemen/image.png",
+      "/images/zentlemen/image copy.png",
     ],
   },
 ];
@@ -127,13 +166,13 @@ const HLV_ONLINE_PROJECTS: ProjectItem[] = [
       { icon: "like", value: "972K", label: "Likes" },
     ],
     images: [
-      "/images/hlv-onlive/12.jpg",
-      "/images/hlv-onlive/13.jpg",
-      "/images/hlv-onlive/epl 3.png",
+      "/images/hlv-online/2.png",
+      "/images/hlv-online/3.png",
+      "/images/hlv-online/4.png",
     ],
   },
   {
-    id: "hlv-classic",
+    id: "hlv-online-classic",
     year: "2024",
     title: "HLV Online Classic",
     tag: "(Sport YT Channel)",
@@ -154,7 +193,27 @@ const HLV_ONLINE_PROJECTS: ProjectItem[] = [
     ],
   },
   {
-    id: "cup-hoc",
+    id: "hlv-onlive",
+    year: "2024",
+    title: "HLV Onlive",
+    tag: "(Livestream Channel)",
+    category: "youtube",
+    accentColor: "#253BFF",
+    description:
+      "A live-broadcast package featuring studio overlays, animated scoreboards, and real-time matchday analytical graphics for high-stakes football streams.",
+    stats: [
+      { icon: "play", value: "Live", label: "Broadcast", isPrimary: true },
+      { icon: "eye", value: "14+", label: "Assets", isPrimary: true },
+      { icon: "clock", value: "2024", label: "Era" },
+    ],
+    images: [
+      "/images/hlv-onlive/2.png",
+      "/images/hlv-onlive/3.png",
+      "/images/hlv-onlive/epl 3.png",
+    ],
+  },
+  {
+    id: "cup-hoc-xem-bong",
     year: "2025",
     title: "Cup Hoc Xem Bong",
     tag: "(Sport YT Channel)",
@@ -175,6 +234,26 @@ const HLV_ONLINE_PROJECTS: ProjectItem[] = [
     ],
   },
   {
+    id: "qua-bong-cuoi-nem-ngon",
+    year: "2025",
+    title: "Quả Bóng Cười, Nem Ngon…",
+    tag: "(Outsource Channels)",
+    category: "outsource",
+    accentColor: "#253BFF",
+    description:
+      "Two high-engagement short-form content channels: Quả Bóng Cười (football comedy & viral shorts) and Nem Ngon (street food culture & entertainment). Delivering punchy vertical video editing, trending pacing, and millions of views across platforms.",
+    stats: [
+      { icon: "play", value: "2", label: "Channels", isPrimary: true },
+      { icon: "eye", value: "Top", label: "Shorts & Videos", isPrimary: true },
+      { icon: "users", value: "Multi-M", label: "Cross-Reach", isPrimary: true },
+    ],
+    images: [
+      "/images/qua-bong-cuoi-nem-ngon/1.png",
+      "/images/qua-bong-cuoi-nem-ngon/2.png",
+      "/images/qua-bong-cuoi-nem-ngon/3.png",
+    ],
+  },
+  {
     id: "the-watcher",
     year: "2025",
     title: "The Watcher",
@@ -188,7 +267,9 @@ const HLV_ONLINE_PROJECTS: ProjectItem[] = [
       { icon: "users", value: "CMS", label: "Admin Panel", isPrimary: true },
       { icon: "clock", value: "2025", label: "Launch" },
     ],
-    images: ["/images/zentlemen/image.png", "/images/zentlemen/image copy.png"],
+    images: [
+      "/logos/project-logos/14_The Watcher.png",
+    ],
   },
 ];
 

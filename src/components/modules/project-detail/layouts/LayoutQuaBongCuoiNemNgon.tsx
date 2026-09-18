@@ -9,15 +9,20 @@ import type { YouTubeVideo } from "@/lib/youtube";
 export interface LayoutQuaBongCuoiNemNgonProps {
   project: ProjectDetail;
   slots?: Record<number, SlotResolvedMedia>;
+  playingSlotId?: number | null;
+  onStartPlaySlot?: (slotId: number | null) => void;
   onOpenMedia?: (url: string, title: string) => void;
 }
 
 export function LayoutQuaBongCuoiNemNgon({
   project,
   slots,
+  playingSlotId,
+  onStartPlaySlot,
   onOpenMedia,
 }: LayoutQuaBongCuoiNemNgonProps) {
-  const [channelVideos, setChannelVideos] = useState<YouTubeVideo[]>([]);
+  const [nemNgonVideos, setNemNgonVideos] = useState<YouTubeVideo[]>([]);
+  const [quaBongVideos, setQuaBongVideos] = useState<YouTubeVideo[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -28,14 +33,8 @@ export function LayoutQuaBongCuoiNemNgon({
           getTopChannelVideos("qua-bong-cuoi", 5),
         ]);
         if (isMounted) {
-          // Alternate videos between channels
-          const combined: YouTubeVideo[] = [];
-          const max = Math.max(nemNgon.length, quaBong.length);
-          for (let i = 0; i < max; i++) {
-            if (nemNgon[i]) combined.push(nemNgon[i]);
-            if (quaBong[i]) combined.push(quaBong[i]);
-          }
-          setChannelVideos(combined);
+          setNemNgonVideos(nemNgon);
+          setQuaBongVideos(quaBong);
         }
       } catch {
         // Fallback to static resolution
@@ -58,16 +57,29 @@ export function LayoutQuaBongCuoiNemNgon({
     // 1. Check explicit slot override or static resolver
     let resolved = slots?.[id] || resolveSlotMedia(project, id, type);
 
-    // 2. If slot is 4..12 and channel video is available, use it
-    if (!resolved?.url && id >= 4 && id <= 12) {
-      const vidIndex = id - 4;
-      const vid = channelVideos[vidIndex];
+    // 2. Slot 4..8: Nem Ngon Videos (5 slots)
+    if (!resolved?.url && id >= 4 && id <= 8) {
+      const vid = nemNgonVideos[id - 4];
       if (vid) {
         resolved = {
           url: `https://www.youtube.com/watch?v=${vid.id}`,
           thumbnail: vid.thumbnail,
           type: "Video",
-          title: vid.title,
+          title: `Nem Ngon - ${vid.title}`,
+          isVideo: true,
+        };
+      }
+    }
+
+    // 3. Slot 9..12: Quả Bóng Cười Videos (4 slots)
+    if (!resolved?.url && id >= 9 && id <= 12) {
+      const vid = quaBongVideos[id - 9];
+      if (vid) {
+        resolved = {
+          url: `https://www.youtube.com/watch?v=${vid.id}`,
+          thumbnail: vid.thumbnail,
+          type: "Video",
+          title: `Quả Bóng Cười - ${vid.title}`,
           isVideo: true,
         };
       }
@@ -84,6 +96,8 @@ export function LayoutQuaBongCuoiNemNgon({
         thumbnail={resolved?.thumbnail}
         title={resolved?.title}
         className={className}
+        isPlayingInline={playingSlotId === id}
+        onStartPlay={onStartPlaySlot}
         onOpen={onOpenMedia}
       />
     );

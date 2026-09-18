@@ -23,6 +23,8 @@ export function ProjectDetailPage() {
     projectId && PROJECTS_DETAIL_DATA[projectId] ? projectId : "zen-tactics";
   const project: ProjectDetail = PROJECTS_DETAIL_DATA[currentId];
 
+  const [playingSlotId, setPlayingSlotId] = useState<number | null>(null);
+
   const [activeMedia, setActiveMedia] = useState<{
     url: string;
     type: "image" | "video";
@@ -36,15 +38,37 @@ export function ProjectDetailPage() {
   };
 
   const handleOpenMedia = (url: string, title: string) => {
+    // 1. Immediately stop any inline playing video/iframe
+    setPlayingSlotId(null);
+
+    // 2. Pause all HTML5 video elements in document to prevent overlap
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
+
     const isVid =
       title.toLowerCase().includes("video") ||
       Boolean(getVideoEmbedUrl(url)) ||
-      url.endsWith(".mp4");
+      /\.(?:mp4|webm|mov)$/i.test(url);
     setActiveMedia({
       url,
       type: isVid ? "video" : "image",
       title,
     });
+  };
+
+  const handleCloseMedia = () => {
+    // Pause any modal videos before closing
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
+    setActiveMedia(null);
   };
 
   return (
@@ -168,6 +192,8 @@ export function ProjectDetailPage() {
               return (
                 <Layout23Slots
                   project={project}
+                  playingSlotId={playingSlotId}
+                  onStartPlaySlot={setPlayingSlotId}
                   onOpenMedia={handleOpenMedia}
                 />
               );
@@ -175,6 +201,8 @@ export function ProjectDetailPage() {
               return (
                 <Layout12Slots
                   project={project}
+                  playingSlotId={playingSlotId}
+                  onStartPlaySlot={setPlayingSlotId}
                   onOpenMedia={handleOpenMedia}
                 />
               );
@@ -182,6 +210,8 @@ export function ProjectDetailPage() {
               return (
                 <Layout13Slots
                   project={project}
+                  playingSlotId={playingSlotId}
+                  onStartPlaySlot={setPlayingSlotId}
                   onOpenMedia={handleOpenMedia}
                 />
               );
@@ -189,6 +219,8 @@ export function ProjectDetailPage() {
               return (
                 <Layout17Slots
                   project={project}
+                  playingSlotId={playingSlotId}
+                  onStartPlaySlot={setPlayingSlotId}
                   onOpenMedia={handleOpenMedia}
                 />
               );
@@ -196,6 +228,8 @@ export function ProjectDetailPage() {
               return (
                 <LayoutQuaBongCuoiNemNgon
                   project={project}
+                  playingSlotId={playingSlotId}
+                  onStartPlaySlot={setPlayingSlotId}
                   onOpenMedia={handleOpenMedia}
                 />
               );
@@ -230,7 +264,7 @@ export function ProjectDetailPage() {
       {/* 5. INTERACTIVE MEDIA LIGHTBOX MODAL */}
       {activeMedia && (
         <div
-          onClick={() => setActiveMedia(null)}
+          onClick={handleCloseMedia}
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn"
         >
           <div
@@ -248,7 +282,7 @@ export function ProjectDetailPage() {
                 </span>
               </div>
               <button
-                onClick={() => setActiveMedia(null)}
+                onClick={handleCloseMedia}
                 className="p-1 sm:p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -267,11 +301,21 @@ export function ProjectDetailPage() {
                   }}
                 >
                   <iframe
-                    src={`${getVideoEmbedUrl(activeMedia.url)!}${getVideoEmbedUrl(activeMedia.url)!.includes("?") ? "&" : "?"}autoplay=1`}
+                    src={getVideoEmbedUrl(activeMedia.url, true)!}
                     title={activeMedia.title}
                     className="w-full h-full border-0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     allowFullScreen
+                  />
+                </div>
+              ) : activeMedia.type === "video" || /\.(?:mp4|webm|mov)$/i.test(activeMedia.url) ? (
+                <div className="flex items-center justify-center max-h-[72vh] w-auto">
+                  <video
+                    src={activeMedia.url}
+                    controls
+                    autoPlay
+                    playsInline
+                    className="max-h-[72vh] max-w-full rounded-lg shadow-2xl object-contain bg-black"
                   />
                 </div>
               ) : (

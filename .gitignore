@@ -23,6 +23,15 @@ dist-ssr
 *.sln
 *.sw?
 
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+
 # Large video assets (streamed via Google Drive / YouTube embeds)
 *.mp4
 *.mov
@@ -30,3 +39,4 @@ dist-ssr
 *.mkv
 *.avi
 *.wmv
+

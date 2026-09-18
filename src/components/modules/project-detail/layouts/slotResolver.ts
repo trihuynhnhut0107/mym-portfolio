@@ -35,7 +35,7 @@ export const PROJECT_VIDEO_THUMBNAILS: Record<string, string> = {
   "1TQDqofOdKf6DpSWdXQUdRs3fvkJXnXhv": "/images/cup-hoc-xem-bong/8.jpg",
 };
 
-export function getVideoEmbedUrl(url: string): string | null {
+export function getVideoEmbedUrl(url: string, autoplay = true): string | null {
   if (!url) return null;
 
   // 1. YouTube
@@ -43,7 +43,8 @@ export function getVideoEmbedUrl(url: string): string | null {
     /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
   );
   if (ytMatch && ytMatch[1]) {
-    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=0&rel=0&modestbranding=1`;
+    const autoParam = autoplay ? "1" : "0";
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=${autoParam}&playsinline=1&enablejsapi=1&rel=0&modestbranding=1`;
   }
 
   // 2. Google Drive Video Preview
@@ -57,7 +58,13 @@ export function getVideoEmbedUrl(url: string): string | null {
   // 3. Vimeo
   const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
   if (vimeoMatch && vimeoMatch[1]) {
-    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=0`;
+    const autoParam = autoplay ? "1" : "0";
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=${autoParam}&playsinline=1`;
+  }
+
+  // 4. Raw Embed URL
+  if (url.includes("/embed/") || url.includes("/preview")) {
+    return url;
   }
 
   return null;
@@ -98,6 +105,13 @@ export function getVideoThumbnail(url: string): string | null {
       return PROJECT_VIDEO_THUMBNAILS[gid];
     }
     return `https://lh3.googleusercontent.com/d/${gid}=w1920-h1080`;
+  }
+
+  // 3. Local video e.g. /videos/zen-tactics/7.mp4
+  const localMatch = url.match(/\/videos\/([^/]+)\/(\d+)\.(?:mp4|webm|mov)/i);
+  if (localMatch) {
+    const [, proj, slot] = localMatch;
+    return `/images/${proj}/${slot}.jpg`;
   }
 
   return null;
@@ -154,17 +168,20 @@ export function resolveSlotMedia(
       }
     }
 
-    // Check images or files matching `/${slotId}.` or `/${slotId}(` or `/${slotId}.jpg.png`
+    // Check images or files matching `/${slotId}.` or `/${slotId}(` or `/${slotId}.jpg.png` or `/${slotId}.mp4`
     for (const m of project.media) {
       const matchRegex = new RegExp(
-        `/(?:${pid}/)?${slotId}(?:\\.[a-z0-9.]+)?\\.(?:png|jpg|jpeg|webp)(?:\\?|$)`,
+        `/(?:${pid}/)?${slotId}(?:\\.[a-z0-9.]+)?\\.(?:png|jpg|jpeg|webp|mp4|webm|mov)(?:\\?|$)`,
         "i"
       );
       if (matchRegex.test(m.src)) {
-        const isVid = m.kind === "video" || m.kind === "embed";
+        const isVid =
+          m.kind === "video" ||
+          m.kind === "embed" ||
+          /\.(?:mp4|webm|mov)$/i.test(m.src);
         return {
           url: m.src,
-          thumbnail: isVid ? getVideoThumbnail(m.src) || undefined : undefined,
+          thumbnail: isVid ? getVideoThumbnail(m.src) || `/images/${pid}/${slotId}.jpg` : undefined,
           type: isVid ? "Video" : defaultType,
           isVideo: isVid,
           title: m.title || `${project.title} - Slot #${slotId}`,

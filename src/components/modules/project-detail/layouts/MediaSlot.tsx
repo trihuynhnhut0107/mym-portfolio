@@ -16,6 +16,8 @@ export interface MediaSlotProps {
   thumbnail?: string;
   title?: string;
   className?: string;
+  isPlayingInline?: boolean;
+  onStartPlay?: (slotId: number | null) => void;
   onOpen?: (url: string, title: string) => void;
 }
 
@@ -29,6 +31,8 @@ export function MediaSlot({
   thumbnail,
   title,
   className = "",
+  isPlayingInline: controlledIsPlaying,
+  onStartPlay,
   onOpen,
 }: MediaSlotProps) {
   const isVideo = type === "Video";
@@ -36,10 +40,29 @@ export function MediaSlot({
   const embedUrl = url ? getVideoEmbedUrl(url) : null;
   const directVideoUrl = url ? getDirectVideoUrl(url) : null;
   const computedThumbnail = thumbnail || (url ? getVideoThumbnail(url) : null);
-  const [isPlayingInline, setIsPlayingInline] = useState(false);
+  const [localIsPlayingInline, setLocalIsPlayingInline] = useState(false);
+  const isPlayingInline = controlledIsPlaying !== undefined ? controlledIsPlaying : localIsPlayingInline;
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleStartPlay = () => {
+    if (onStartPlay) {
+      onStartPlay(slotId);
+    } else {
+      setLocalIsPlayingInline(true);
+    }
+  };
+
+  const handleOpenTheater = () => {
+    if (onStartPlay) {
+      onStartPlay(null);
+    }
+    setLocalIsPlayingInline(false);
+    if (url) {
+      onOpen?.(url, displayTitle);
+    }
+  };
 
   // 1. WIREFRAME PLACEHOLDER (When media is not yet placed)
   if (!url) {
@@ -79,40 +102,66 @@ export function MediaSlot({
   }
 
   // 2. VIDEO SLOT (YouTube, Google Drive, or Direct Video)
-  if (isVideo || embedUrl) {
-    if (isPlayingInline && embedUrl) {
-      return (
-        <div
-          data-slot-id={slotId}
-          className={`relative group bg-[#05050A] overflow-hidden border border-white/20 w-full ${aspectClass} ${className}`}
-        >
-          <iframe
-            src={`${embedUrl}${embedUrl.includes("?") ? "&" : "?"}autoplay=1`}
-            title={displayTitle}
-            className="w-full h-full border-0 absolute inset-0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-          {/* Top-Right Expand Button to Lightbox */}
-          <button
-            onClick={() => onOpen?.(url, displayTitle)}
-            className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white/90 hover:text-white transition-colors z-20 cursor-pointer shadow-lg backdrop-blur-sm"
-            title="Expand to theater view"
+  if (isVideo || embedUrl || directVideoUrl) {
+    if (isPlayingInline) {
+      if (embedUrl) {
+        return (
+          <div
+            data-slot-id={slotId}
+            className={`relative group bg-[#05050A] overflow-hidden border border-white/20 w-full ${aspectClass} ${className}`}
           >
-            <Maximize2 className="w-4 h-4" />
-          </button>
-        </div>
-      );
+            <iframe
+              src={embedUrl}
+              title={displayTitle}
+              className="w-full h-full border-0 absolute inset-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+            {/* Top-Right Expand Button to Lightbox */}
+            <button
+              onClick={handleOpenTheater}
+              className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white/90 hover:text-white transition-colors z-20 cursor-pointer shadow-lg backdrop-blur-sm"
+              title="Expand to theater view"
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      }
+      if (directVideoUrl) {
+        return (
+          <div
+            data-slot-id={slotId}
+            className={`relative group bg-[#05050A] overflow-hidden border border-white/20 w-full ${aspectClass} ${className}`}
+          >
+            <video
+              src={directVideoUrl}
+              controls
+              autoPlay
+              playsInline
+              className="w-full h-full object-cover absolute inset-0"
+            />
+            {/* Top-Right Expand Button to Lightbox */}
+            <button
+              onClick={handleOpenTheater}
+              className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/70 hover:bg-black/90 text-white/90 hover:text-white transition-colors z-20 cursor-pointer shadow-lg backdrop-blur-sm"
+              title="Expand to theater view"
+            >
+              <Maximize2 className="w-4 h-4" />
+            </button>
+          </div>
+        );
+      }
     }
 
     return (
       <div
         data-slot-id={slotId}
         onClick={() => {
-          if (embedUrl) {
-            setIsPlayingInline(true);
+          if (embedUrl || directVideoUrl) {
+            handleStartPlay();
           } else {
-            onOpen?.(url, displayTitle);
+            handleOpenTheater();
           }
         }}
         className={`relative group bg-[#0A1244] overflow-hidden cursor-pointer border border-white/20 hover:border-blue-400/80 transition-all duration-300 w-full ${aspectClass} ${className}`}

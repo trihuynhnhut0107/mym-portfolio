@@ -41,13 +41,13 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
     description: "A pioneering Vietnamese football channel built around visual tactical analysis, livestream production, and accessible storytelling.",
     vision: "Turn complex football information into a rewarding viewing experience through clear motion, graphics, and storytelling.",
     statsNodes: stats([["64K", "SUBS"], ["44K", "FOLLOW"], ["6.3M", "VIEWS"]]),
-    media: [video("https://drive.google.com/file/d/1iUfXeqNqXsCUNN66TlSX2c53nDPnybeL/preview"), image("/images/zen-tactics/2.png", "square"), image("/images/zen-tactics/3.png", "square"), ...numbered("zen-tactics", ["4.png", "5.png", "6.png", "9.png", "10.jpg", "11.jpg", "12.png", "13.png", "14.jpg", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("https://drive.google.com/file/d/1gJsr_2d2FDO2fGnXxOUk1_hiGYoCuqKs/preview", "portrait"), video("https://drive.google.com/file/d/1--QabvWWob7rTjmlqAS5BO8VJIDddazM/preview", "portrait"), video("https://drive.google.com/file/d/1PsO8fLA9SUn6HzAfCUQCT4ETE3ztca3F/preview")],
+    media: [video("https://drive.google.com/file/d/1iUfXeqNqXsCUNN66TlSX2c53nDPnybeL/preview"), image("/images/zen-tactics/2.png", "square"), image("/images/zen-tactics/3.png", "square"), ...numbered("zen-tactics", ["4.png", "5.png", "6.png", "9.png", "10.jpg", "11.jpg", "12.png", "13.png", "14.jpg", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("/videos/zen-tactics/7.mp4", "portrait"), video("/videos/zen-tactics/8.mp4", "portrait"), video("https://drive.google.com/file/d/1PsO8fLA9SUn6HzAfCUQCT4ETE3ztca3F/preview")],
   },
   "modern-football": {
     id: "modern-football", year: "2022", title: "Modern Football", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,
     description: "The analytical successor to Zen Tactics, pairing a new visual identity with football analysis for a younger audience.", vision: "Make intricate tactical setups accessible and visually compelling.",
     statsNodes: stats([["24K", "SUBS"], ["30K", "FOLLOW"], ["4M", "VIEWS"]]),
-    media: [video("https://drive.google.com/file/d/1wPp6zFc5Jzz4lDfGOZN3rHIKmk9WrzAa/preview"), ...numbered("modern-football", ["2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.png", "9.jpg", "10.png", "11.jpg", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "23.png", "24.png"]), video("https://drive.google.com/file/d/1B5vdu5vfm48xU6MLpZ7xZ3QKkarEcdF1/preview"), video("https://drive.google.com/file/d/1PFRTMcV4vx8kqdQF30PV6SKNRgy0H7MW/preview"), video("https://drive.google.com/file/d/1hiiwMSHkMjRDs48cad0dCLHwZrXFumev/preview")],
+    media: [video("https://drive.google.com/file/d/1wPp6zFc5Jzz4lDfGOZN3rHIKmk9WrzAa/preview"), ...numbered("modern-football", ["2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.png", "9.jpg", "10.png", "11.jpg", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "23.png", "24.png"]), video("/videos/modern-football/7.mp4", "portrait"), video("/videos/modern-football/8.mp4", "portrait"), video("https://drive.google.com/file/d/1hiiwMSHkMjRDs48cad0dCLHwZrXFumev/preview")],
   },
   "zen-cine-esports": {
     id: "zen-cine-esports", year: "2022", title: "Zen Cine & Esports", tag: "(Other YT Channels)", category: "youtube", layoutType: 2,
@@ -77,13 +77,13 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
     id: "hlv-online", year: "2023", title: "HLV Online", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,
     description: "MYM's signature sports-media brand combining modern motion graphics, tactical analysis, and interactive storytelling.", vision: "Prove that tactical depth and mass accessibility can coexist.",
     statsNodes: stats([["164K", "SUBS"], ["133K", "FOLLOW"], ["39M", "VIEWS"]]),
-    media: [video("https://drive.google.com/file/d/1pjXf7hlm1-8QkPOhLbqoG6qsv5Gg39Q0/preview"), image("/images/hlv-online/2.png", "square"), image("/images/hlv-online/3.png", "square"), ...numbered("hlv-online", ["4.png", "5.png", "6.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("https://drive.google.com/file/d/1z7Hfv3E0Kgocw-lZVOvqFPZ7gVP4OKjI/preview", "portrait"), video("https://drive.google.com/file/d/1nwYORA8hSB9U7ALh6SH5pe69HvCAy8nf/preview", "portrait"), video("https://drive.google.com/file/d/1zsZVLCyKolS3gVdRR0wYecKhwFjJ427f/preview")],
+    media: [video("https://drive.google.com/file/d/1pjXf7hlm1-8QkPOhLbqoG6qsv5Gg39Q0/preview"), image("/images/hlv-online/2.png", "square"), image("/images/hlv-online/3.png", "square"), ...numbered("hlv-online", ["4.png", "5.png", "6.png", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.png", "21.png", "22.png", "23.png"]), video("/videos/hlv-online/7.mp4", "portrait"), video("/videos/hlv-online/8.mp4", "portrait"), video("https://drive.google.com/file/d/1zsZVLCyKolS3gVdRR0wYecKhwFjJ427f/preview")],
   },
   "hlv-online-classic": {
     id: "hlv-online-classic", year: "2024", title: "HLV Online Classic", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,
     description: "A retro, narrative-led channel focused on iconic football moments and emotional audience connection.", vision: "Restore human connection to sports history.",
     statsNodes: stats([["31K", "SUBS"], ["3.3M", "VIEWS"], ["93K", "HOURS"]]),
-    media: [video("https://drive.google.com/file/d/1w88XRlAu0XT_fD1GNPMtuXQBGZ8gm3n8/preview"), ...numbered("hlv-online-classic", ["2.png", "3.png", "4.jpg", "5.png", "6.jpg", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.jpg", "21.jpg", "22.jpg", "23.jpg"]), video("https://drive.google.com/file/d/1kcT1b_QLJ9FkAJAtZ8pOxnfvXT6Ividt/preview"), video("https://drive.google.com/file/d/1lbHCnSD3z6yyr0ilcxK8AW3GhdFefeXN/preview"), video("https://drive.google.com/file/d/1EKgLB-TBbor5w_AFsNcPAYnPUbbiVSzK/preview")],
+    media: [video("https://drive.google.com/file/d/1w88XRlAu0XT_fD1GNPMtuXQBGZ8gm3n8/preview"), ...numbered("hlv-online-classic", ["2.png", "3.png", "4.jpg", "5.png", "6.jpg", "9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png", "18.png", "19.png", "20.jpg", "21.jpg", "22.jpg", "23.jpg"]), video("/videos/hlv-online-classic/7.mp4", "portrait"), video("/videos/hlv-online-classic/8.mp4", "portrait"), video("https://drive.google.com/file/d/1EKgLB-TBbor5w_AFsNcPAYnPUbbiVSzK/preview")],
   },
   "hlv-onlive": {
     id: "hlv-onlive", year: "2024", title: "HLV Onlive", tag: "(Livestream Channel)", category: "youtube", layoutType: 3,
@@ -95,11 +95,11 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
     id: "cup-hoc-xem-bong", year: "2025", title: "Cúp Học Xem Bóng", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,
     description: "A reality-show format for emerging football commentary and analysis talent.", vision: "Build an ecosystem for high-potential sports-media creators.",
     statsNodes: stats([["11K", "SUBS"], ["51K", "FOLLOW"], ["1.6M", "VIEWS"]]),
-    media: [video("https://drive.google.com/file/d/1Xz1Kz5ppNhRzYzztR2baJzjDHVlXlFLB/preview"), ...numbered("cup-hoc-xem-bong", ["2.png", "3.png", "4.png", "5.png", "6.png"]), video("https://drive.google.com/file/d/1DbZF75YQNZgmHSjpwKP7MOI_Rx3nUo7K/preview"), video("https://drive.google.com/file/d/1TQDqofOdKf6DpSWdXQUdRs3fvkJXnXhv/preview"), ...numbered("cup-hoc-xem-bong", ["9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png"]), embed("https://www.youtube.com/watch?v=ep_oOmFukpY"), ...numbered("cup-hoc-xem-bong", ["18.png", "19.png", "20.png", "21.png", "22.png", "23.png"])],
+    media: [video("https://drive.google.com/file/d/1Xz1Kz5ppNhRzYzztR2baJzjDHVlXlFLB/preview"), ...numbered("cup-hoc-xem-bong", ["2.png", "3.png", "4.png", "5.png", "6.png"]), video("/videos/cup-hoc-xem-bong/7.mp4", "portrait"), video("/videos/cup-hoc-xem-bong/8.mp4", "portrait"), ...numbered("cup-hoc-xem-bong", ["9.png", "10.png", "11.png", "12.png", "13.png", "14.png", "15.png", "16.png"]), embed("https://www.youtube.com/watch?v=ep_oOmFukpY"), ...numbered("cup-hoc-xem-bong", ["18.png", "19.png", "20.png", "21.png", "22.png", "23.png"])],
   },
   "qua-bong-cuoi-nem-ngon": {
-    id: "qua-bong-cuoi-nem-ngon", year: "2025", title: "Quả Bóng Cười, Ném Ngon…", tag: "(Outsource Channels)", category: "outsource", layoutType: 5,
-    description: "Two content channels presented together: Ném Ngon and Quả Bóng Cười.", vision: "Match entertaining channel content with clear, platform-native presentation.",
+    id: "qua-bong-cuoi-nem-ngon", year: "2025", title: "Quả Bóng Cười, Nem Ngon…", tag: "(Outsource Channels)", category: "outsource", layoutType: 5,
+    description: "Two content channels presented together: Nem Ngon and Quả Bóng Cười.", vision: "Match entertaining channel content with clear, platform-native presentation.",
     statsNodes: stats([["2", "CHANNELS"], ["TOP", "VIDEOS"], ["2025", "ERA"]]),
     media: [image("/images/qua-bong-cuoi-nem-ngon/1.png", "square"), image("/images/qua-bong-cuoi-nem-ngon/2.png", "square"), image("/images/qua-bong-cuoi-nem-ngon/3.png")], runtimeChannels: ["nem-ngon", "qua-bong-cuoi"],
   },
@@ -111,4 +111,14 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
   },
 };
 
+// Route aliases for flexible navigation
+PROJECTS_DETAIL_DATA["cup-hoc"] = PROJECTS_DETAIL_DATA["cup-hoc-xem-bong"];
+PROJECTS_DETAIL_DATA["cuphocxembong"] = PROJECTS_DETAIL_DATA["cup-hoc-xem-bong"];
+PROJECTS_DETAIL_DATA["zen-fifa"] = PROJECTS_DETAIL_DATA["zen-fifa-eworldcup"];
+PROJECTS_DETAIL_DATA["hlv-classic"] = PROJECTS_DETAIL_DATA["hlv-online-classic"];
+PROJECTS_DETAIL_DATA["zen-cine"] = PROJECTS_DETAIL_DATA["zen-cine-esports"];
+PROJECTS_DETAIL_DATA["qua-bong-cuoi"] = PROJECTS_DETAIL_DATA["qua-bong-cuoi-nem-ngon"];
+PROJECTS_DETAIL_DATA["nem-ngon"] = PROJECTS_DETAIL_DATA["qua-bong-cuoi-nem-ngon"];
+
 export const PROJECT_IDS = Object.keys(PROJECTS_DETAIL_DATA);
+

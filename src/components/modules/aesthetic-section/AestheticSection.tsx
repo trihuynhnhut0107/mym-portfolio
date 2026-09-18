@@ -241,22 +241,43 @@ function MarqueeRow({
 }
 
 export function AestheticSection() {
-  const [activeVideo, setActiveVideo] = useState<ThumbnailItem | null>(null)
+  const [activeVideo, setActiveVideo] = useState<ThumbnailItem | null>(null);
+
+  const handleOpenVideo = (item: ThumbnailItem) => {
+    // Pause any other playing videos on the page
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
+    setActiveVideo(item);
+  };
+
+  const handleCloseVideo = () => {
+    const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
+    allVideos.forEach((vid) => {
+      if (!vid.paused) {
+        vid.pause();
+      }
+    });
+    setActiveVideo(null);
+  };
 
   // Close modal on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        setActiveVideo(null)
+        handleCloseVideo();
       }
-    }
+    };
     if (activeVideo) {
-      window.addEventListener("keydown", handleKeyDown)
+      window.addEventListener("keydown", handleKeyDown);
     }
-    return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [activeVideo])
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeVideo]);
 
-  const embedUrl = activeVideo?.videoUrl ? getVideoEmbedUrl(activeVideo.videoUrl) : null
+  const embedUrl = activeVideo?.videoUrl ? getVideoEmbedUrl(activeVideo.videoUrl) : null;
 
   return (
     <section
@@ -304,7 +325,7 @@ export function AestheticSection() {
           direction="left"
           speed={40}
           isPaused={!!activeVideo}
-          onSelectVideo={(item) => setActiveVideo(item)}
+          onSelectVideo={handleOpenVideo}
         />
 
         {/* Bottom Marquee Row (Moving Right) */}
@@ -313,14 +334,14 @@ export function AestheticSection() {
           direction="right"
           speed={40}
           isPaused={!!activeVideo}
-          onSelectVideo={(item) => setActiveVideo(item)}
+          onSelectVideo={handleOpenVideo}
         />
       </div>
 
       {/* Interactive Video Playback Modal (Stops Marquee on Play) */}
       {activeVideo && (
         <div
-          onClick={() => setActiveVideo(null)}
+          onClick={handleCloseVideo}
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fadeIn"
         >
           <div
@@ -344,7 +365,7 @@ export function AestheticSection() {
                 </span>
               </div>
               <button
-                onClick={() => setActiveVideo(null)}
+                onClick={handleCloseVideo}
                 className="p-1 sm:p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
