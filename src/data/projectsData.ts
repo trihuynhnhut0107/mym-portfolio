@@ -19,6 +19,7 @@ export interface ProjectDetail {
   statsNodes: Array<{ value: string; label: string }>;
   layoutType: LayoutType;
   media: ProjectMedia[];
+  websiteUrl?: string;
   runtimeChannels?: Array<"nem-ngon" | "qua-bong-cuoi">;
   horizontalVideos?: string[];
   videos?: string[];
@@ -105,9 +106,10 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
   },
   "the-watcher": {
     id: "the-watcher", year: "2025", title: "The Watcher", tag: "(Website)", category: "website", layoutType: 6,
-    description: "A website project awaiting the interactive demonstration requested in the review.", vision: "The present phase keeps an editorial preview until the source website is supplied.",
+    description: "A premium subscription-based editorial platform and digital publication exploring art, football culture, and visual essays.", vision: "Create an atmospheric digital space that bridges deep editorial thought with modern interactive design.",
     statsNodes: stats([["WEB", "EXPERIENCE"], ["UI", "DESIGN"], ["2025", "LAUNCH"]]),
-    media: [image("/logos/project-logos/14_The Watcher.png", "square")],
+    websiteUrl: "https://thewatcherxiii.info/",
+    media: [embed("https://thewatcherxiii.info/")],
   },
 };
 

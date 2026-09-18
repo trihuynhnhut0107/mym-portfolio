@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PROJECTS_DETAIL_DATA } from "@/data/projectsData";
 import type { ProjectDetail } from "@/data/projectsData";
-import { ArrowLeft, X } from "lucide-react";
+import { ArrowLeft, X, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { Footer } from "@/components/modules/footer";
+import { Safari } from "@/components/ui/safari";
 import {
   Layout23Slots,
   Layout12Slots,
@@ -235,6 +236,42 @@ export function ProjectDetailPage() {
               );
             case 6:
             default:
+              if (project.websiteUrl || project.id === "the-watcher") {
+                const siteUrl = project.websiteUrl || "https://thewatcherxiii.info/";
+                return (
+                  <div className="w-full flex flex-col items-center gap-4">
+                    {/* Top Action Bar */}
+                    <div className="w-full flex items-center justify-between px-1">
+                      <span className="text-xs font-mono text-white/50 uppercase tracking-wider">
+                        Interactive Live Preview
+                      </span>
+                      <a
+                        href={siteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#253BFF] hover:bg-[#3B50FF] text-white text-xs font-semibold transition-all shadow-lg shadow-blue-600/20 hover:scale-105 cursor-pointer"
+                      >
+                        <span>Open in New Tab</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+
+                    {/* Magic UI Safari Mockup */}
+                    <Safari
+                      url={siteUrl}
+                      className="w-full shadow-2xl border border-white/10 rounded-[12px] overflow-hidden"
+                    >
+                      <iframe
+                        src={siteUrl}
+                        title={project.title}
+                        className="w-full h-full border-0 bg-[#05050A]"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        loading="lazy"
+                      />
+                    </Safari>
+                  </div>
+                );
+              }
               return (
                 <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
                   {project.media?.map((m, idx) => (
