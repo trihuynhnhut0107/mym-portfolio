@@ -70,9 +70,10 @@ export const PROJECTS_DETAIL_DATA: Record<string, ProjectDetail> = {
   },
   zentlemen: {
     id: "zentlemen", year: "2022", title: "Zentlemen", tag: "(Website)", category: "website", layoutType: 6,
-    description: "A website project presented through its approved editorial screenshots.", vision: "Interactive website exploration is reserved for a future phase.",
+    description: "A sports & entertainment web portal combining live discussions, tactical analysis, and multimedia video features.", vision: "Create an engaging sports media portal with community livestream interaction, breaking analysis, and video entertainment.",
     statsNodes: stats([["WEB", "EXPERIENCE"], ["UI", "DESIGN"], ["2022", "LAUNCH"]]),
-    media: [image("/images/zentlemen/image.png"), image("/images/zentlemen/image copy.png", "portrait")],
+    websiteUrl: "/zentlemen.html",
+    media: [embed("/zentlemen.html"), image("/images/zentlemen/image.png"), image("/images/zentlemen/image copy.png", "portrait")],
   },
   "hlv-online": {
     id: "hlv-online", year: "2023", title: "HLV Online", tag: "(Sport YT Channel)", category: "youtube", layoutType: 1,

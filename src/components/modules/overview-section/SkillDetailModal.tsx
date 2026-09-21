@@ -49,7 +49,7 @@ function getVideoEmbedUrl(url?: string, youtubeId?: string): string | null {
     /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
   );
   if (gdriveMatch && gdriveMatch[1]) {
-    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`;
+    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview?autoplay=1`;
   }
 
   // 3. Vimeo

@@ -236,8 +236,9 @@ export function ProjectDetailPage() {
               );
             case 6:
             default:
-              if (project.websiteUrl || project.id === "the-watcher") {
-                const siteUrl = project.websiteUrl || "https://thewatcherxiii.info/";
+              if (project.websiteUrl || project.id === "the-watcher" || project.id === "zentlemen") {
+                const siteUrl = project.websiteUrl || (project.id === "the-watcher" ? "https://thewatcherxiii.info/" : "/zentlemen.html");
+                const displayUrl = siteUrl.startsWith("http") ? siteUrl : (project.id === "zentlemen" ? "https://zentlemen.vn" : siteUrl);
                 return (
                   <div className="w-full flex flex-col items-center gap-4">
                     {/* Top Action Bar */}
@@ -245,20 +246,22 @@ export function ProjectDetailPage() {
                       <span className="text-xs font-mono text-white/50 uppercase tracking-wider">
                         Interactive Live Preview
                       </span>
-                      <a
-                        href={siteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#253BFF] hover:bg-[#3B50FF] text-white text-xs font-semibold transition-all shadow-lg shadow-blue-600/20 hover:scale-105 cursor-pointer"
-                      >
-                        <span>Open in New Tab</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
+                      {project.id !== "zentlemen" && (
+                        <a
+                          href={siteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#253BFF] hover:bg-[#3B50FF] text-white text-xs font-semibold transition-all shadow-lg shadow-blue-600/20 hover:scale-105 cursor-pointer"
+                        >
+                          <span>Open in New Tab</span>
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
                     </div>
 
                     {/* Magic UI Safari Mockup */}
                     <Safari
-                      url={siteUrl}
+                      url={displayUrl}
                       className="w-full shadow-2xl border border-white/10 rounded-[12px] overflow-hidden"
                     >
                       <iframe

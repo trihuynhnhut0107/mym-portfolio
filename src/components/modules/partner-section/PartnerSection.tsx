@@ -5,13 +5,13 @@ const SPONSOR_LOGOS = [
   { name: "EA FC Mobile", src: "/logos/sponsors/1.png" },
   { name: "Ananas", src: "/logos/sponsors/2.png" },
   { name: "On Sports", src: "/logos/sponsors/3.png" },
-  { name: "Sponsor 4", src: "/logos/sponsors/4.png" },
-  { name: "Sponsor 5", src: "/logos/sponsors/5.png" },
+  { name: "Akala", src: "/logos/sponsors/4.png" },
+  { name: "XM", src: "/logos/sponsors/5.png" },
   { name: "Sponsor 6", src: "/logos/sponsors/6.png" },
   { name: "Sponsor 7", src: "/logos/sponsors/7.png" },
   { name: "Sponsor 8", src: "/logos/sponsors/8.png" },
-  { name: "Sponsor 9", src: "/logos/sponsors/9.png" },
-  { name: "Sponsor 10", src: "/logos/sponsors/10.png" },
+  { name: "The Sporting News", src: "/logos/sponsors/9.png" },
+  { name: "Neymar Sport", src: "/logos/sponsors/10.png" },
 ];
 
 interface PartnerSectionProps {
@@ -25,9 +25,9 @@ export function PartnerSection({ partnerProgress = 0 }: PartnerSectionProps) {
   const labelColor = `rgb(${labelR}, ${labelG}, 255)`;
 
   return (
-    <section className="w-full bg-transparent flex flex-col items-center py-8 sm:py-14 select-none">
+    <section className="w-full bg-transparent flex flex-col items-center py-10 sm:py-16 select-none">
       {/* Label on top with DiaTextReveal */}
-      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 mb-1 sm:mb-2 flex items-center justify-start">
+      <div className="w-full max-w-7xl mx-auto px-6 sm:px-12 mb-2 sm:mb-4 flex items-center justify-start">
         <DiaTextReveal
           text="MYM's Partners"
           colors={["#253BFF", "#586CFF", "#FF3B58", "#253BFF"]}
@@ -40,27 +40,27 @@ export function PartnerSection({ partnerProgress = 0 }: PartnerSectionProps) {
       </div>
 
       {/* Transparent Sponsors Marquee Bar (No Border, Transparent Background) */}
-      <div className="w-full bg-transparent pt-0 pb-4 sm:pb-6 overflow-hidden">
-        <Marquee repeat={6} className="[--duration:28s] [--gap:2rem] sm:[--gap:3rem]">
-          <div className="flex items-center gap-8 sm:gap-12 select-none">
+      <div className="w-full bg-transparent pt-0 pb-6 sm:pb-8 overflow-hidden">
+        <Marquee repeat={6} className="[--duration:36s] [--gap:3.5rem] sm:[--gap:6rem]">
+          <div className="flex items-center gap-14 sm:gap-20 md:gap-24 lg:gap-28 select-none">
             {SPONSOR_LOGOS.map((sponsor, idx) => (
               <div
                 key={idx}
-                className="relative flex items-center justify-center shrink-0 h-20 sm:h-20 md:h-22 lg:h-24"
+                className="relative flex items-center justify-center shrink-0 h-16 sm:h-20 md:h-24 lg:h-28"
               >
                 {/* Dark Logo (Active on White Background) */}
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
-                  style={{ opacity: 1 - progress }}
-                  className="h-full w-auto max-w-[280px] sm:max-w-[300px] md:max-w-[340px] object-contain brightness-0 opacity-85 transition-opacity duration-150"
+                  style={{ opacity: 0.85 * (1 - progress) }}
+                  className="h-full w-auto object-contain brightness-0 pointer-events-none select-none transition-opacity duration-150"
                 />
                 {/* White Logo (Active on Blue Background) */}
                 <img
                   src={sponsor.src}
                   alt={sponsor.name}
-                  style={{ opacity: progress }}
-                  className="absolute inset-0 h-full w-auto max-w-[280px] sm:max-w-[300px] md:max-w-[340px] object-contain brightness-0 invert opacity-95 transition-opacity duration-150"
+                  style={{ opacity: 0.95 * progress }}
+                  className="absolute top-0 left-0 h-full w-full object-contain brightness-0 invert pointer-events-none select-none transition-opacity duration-150"
                 />
               </div>
             ))}

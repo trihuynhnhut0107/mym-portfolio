@@ -24,7 +24,7 @@ function getVideoEmbedUrl(url: string): string | null {
     /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
   )
   if (gdriveMatch && gdriveMatch[1]) {
-    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`
+    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview?autoplay=1`
   }
   const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/)
   if (vimeoMatch && vimeoMatch[1]) {

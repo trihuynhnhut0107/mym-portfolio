@@ -40,7 +40,7 @@ export function getVideoEmbedUrl(url: string, autoplay = true): string | null {
 
   // 1. YouTube
   const ytMatch = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/,
   );
   if (ytMatch && ytMatch[1]) {
     const autoParam = autoplay ? "1" : "0";
@@ -49,14 +49,17 @@ export function getVideoEmbedUrl(url: string, autoplay = true): string | null {
 
   // 2. Google Drive Video Preview
   const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
+    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/,
   );
   if (gdriveMatch && gdriveMatch[1]) {
-    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`;
+    const autoParam = autoplay ? "?autoplay=1" : "";
+    return `https://drive.google.com/file/d/${gdriveMatch[1]}/preview${autoParam}`;
   }
 
   // 3. Vimeo
-  const vimeoMatch = url.match(/(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/);
+  const vimeoMatch = url.match(
+    /(?:vimeo\.com\/(?:video\/)?|player\.vimeo\.com\/video\/)(\d+)/,
+  );
   if (vimeoMatch && vimeoMatch[1]) {
     const autoParam = autoplay ? "1" : "0";
     return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=${autoParam}&playsinline=1`;
@@ -64,6 +67,10 @@ export function getVideoEmbedUrl(url: string, autoplay = true): string | null {
 
   // 4. Raw Embed URL
   if (url.includes("/embed/") || url.includes("/preview")) {
+    if (autoplay && !url.includes("autoplay=")) {
+      const sep = url.includes("?") ? "&" : "?";
+      return `${url}${sep}autoplay=1`;
+    }
     return url;
   }
 
@@ -73,12 +80,16 @@ export function getVideoEmbedUrl(url: string, autoplay = true): string | null {
 export function getDirectVideoUrl(url?: string): string | null {
   if (!url) return null;
   const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
+    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/,
   );
   if (gdriveMatch && gdriveMatch[1]) {
     return `https://drive.usercontent.google.com/download?id=${gdriveMatch[1]}&export=download`;
   }
-  if (url.endsWith(".mp4") || url.endsWith(".webm") || url.includes("/download")) {
+  if (
+    url.endsWith(".mp4") ||
+    url.endsWith(".webm") ||
+    url.includes("/download")
+  ) {
     return url;
   }
   return null;
@@ -89,7 +100,7 @@ export function getVideoThumbnail(url: string): string | null {
 
   // 1. YouTube
   const ytMatch = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|user\/\S+|live\/\S+))([\w-]{11})/,
   );
   if (ytMatch && ytMatch[1]) {
     return `https://i.ytimg.com/vi/${ytMatch[1]}/hqdefault.jpg`;
@@ -97,7 +108,7 @@ export function getVideoThumbnail(url: string): string | null {
 
   // 2. Google Drive Video
   const gdriveMatch = url.match(
-    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/
+    /(?:drive\.google\.com\/(?:file\/d\/|open\?id=)|docs\.google\.com\/file\/d\/)([\w-]+)/,
   );
   if (gdriveMatch && gdriveMatch[1]) {
     const gid = gdriveMatch[1];
@@ -125,7 +136,7 @@ export function getVideoThumbnail(url: string): string | null {
 export function resolveSlotMedia(
   project?: ProjectDetail,
   slotId?: number,
-  defaultType: "Video" | "Image" | "Logo" = "Image"
+  defaultType: "Video" | "Image" | "Logo" = "Image",
 ): SlotResolvedMedia | null {
   if (!project || slotId === undefined || slotId === null) return null;
   const pid = project.id;
@@ -149,7 +160,33 @@ export function resolveSlotMedia(
     };
   }
 
-  // 2. Search project.media array
+  // 2. Special case for modern-football slot remapping: slot 22 -> 23.png, slot 23 -> 24.png
+  if (pid === "modern-football") {
+    if (slotId === 22) {
+      const item = project.media?.find((m) => m.src.includes("/23.png"));
+      if (item) {
+        return {
+          url: item.src,
+          type: "Image",
+          isVideo: false,
+          title: `${project.title} - Slot #22`,
+        };
+      }
+    }
+    if (slotId === 23) {
+      const item = project.media?.find((m) => m.src.includes("/24.png"));
+      if (item) {
+        return {
+          url: item.src,
+          type: "Image",
+          isVideo: false,
+          title: `${project.title} - Slot #23`,
+        };
+      }
+    }
+  }
+
+  // 3. Search project.media array
   if (project.media && project.media.length > 0) {
     // Check videos first by thumbnail mapping
     for (const m of project.media) {
@@ -172,7 +209,7 @@ export function resolveSlotMedia(
     for (const m of project.media) {
       const matchRegex = new RegExp(
         `/(?:${pid}/)?${slotId}(?:\\.[a-z0-9.]+)?\\.(?:png|jpg|jpeg|webp|mp4|webm|mov)(?:\\?|$)`,
-        "i"
+        "i",
       );
       if (matchRegex.test(m.src)) {
         const isVid =
@@ -181,23 +218,13 @@ export function resolveSlotMedia(
           /\.(?:mp4|webm|mov)$/i.test(m.src);
         return {
           url: m.src,
-          thumbnail: isVid ? getVideoThumbnail(m.src) || `/images/${pid}/${slotId}.jpg` : undefined,
+          thumbnail: isVid
+            ? getVideoThumbnail(m.src) || `/images/${pid}/${slotId}.jpg`
+            : undefined,
           type: isVid ? "Video" : defaultType,
           isVideo: isVid,
           title: m.title || `${project.title} - Slot #${slotId}`,
         };
-      }
-    }
-
-    // Fallback for modern-football slot 22 -> 23.png, slot 23 -> 24.png if 22 is missing
-    if (pid === "modern-football") {
-      if (slotId === 22) {
-        const item = project.media.find((m) => m.src.includes("/23.png"));
-        if (item) return { url: item.src, type: "Image", isVideo: false, title: `${project.title} - Slot #22` };
-      }
-      if (slotId === 23) {
-        const item = project.media.find((m) => m.src.includes("/24.png"));
-        if (item) return { url: item.src, type: "Image", isVideo: false, title: `${project.title} - Slot #23` };
       }
     }
   }
