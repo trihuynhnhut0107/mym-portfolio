@@ -1412,7 +1412,8 @@ export function SkillDetailModal({
     setActiveMedia(media);
   }, []);
 
-  const handleCloseLightbox = useCallback(() => {
+  const handleCloseLightbox = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
     // Pause any modal videos before closing
     const allVideos = document.querySelectorAll<HTMLVideoElement>("video");
     allVideos.forEach((vid) => {
