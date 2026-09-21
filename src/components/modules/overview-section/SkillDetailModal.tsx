@@ -822,13 +822,13 @@ const GraphicDesignerView = memo(function GraphicDesignerView({
                 <MediaSkillSlot
                   id={33}
                   skillId={skillId}
-                  aspectClass="aspect-square w-full border-b border-white/20"
+                  aspectClass="flex-1 w-full border-b border-white/20"
                   onOpenMedia={onOpenMedia}
                 />
                 <MediaSkillSlot
                   id={34}
                   skillId={skillId}
-                  aspectClass="aspect-square w-full"
+                  aspectClass="flex-1 w-full"
                   onOpenMedia={onOpenMedia}
                 />
               </div>
