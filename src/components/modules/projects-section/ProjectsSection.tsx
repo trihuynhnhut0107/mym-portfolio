@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
 
 export interface ProjectStat {
@@ -312,19 +312,9 @@ export function ProjectsSection({
   onSelectProject,
   projectsProgress = 1,
 }: ProjectsSectionProps) {
-  const navigate = useNavigate();
-
   const labelColor = lerpColor(projectsProgress);
   const titleTextColor = lerpColor(projectsProgress);
   const descTextColor = lerpTextColor(projectsProgress);
-
-  const handleCardClick = (id: string) => {
-    if (onSelectProject) {
-      onSelectProject(id);
-    } else {
-      navigate(`/project/${id}`);
-    }
-  };
 
   const renderCard = (project: ProjectItem) => {
     return (
@@ -335,10 +325,19 @@ export function ProjectsSection({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
-        className="w-full h-full cursor-pointer group/card scroll-mt-24 sm:scroll-mt-32"
-        onClick={() => handleCardClick(project.id)}
+        className="w-full h-full group/card scroll-mt-24 sm:scroll-mt-32"
       >
-        <div className="p-6 sm:p-8 rounded-[28px] text-white shadow-2xl flex flex-col justify-between h-full gap-6 bg-[#253BFF] group-hover/card:ring-2 group-hover/card:ring-white/50 transition-all duration-300">
+        <Link
+          to={`/project/${project.id}`}
+          onClick={(e) => {
+            if (onSelectProject) {
+              e.preventDefault();
+              onSelectProject(project.id);
+            }
+          }}
+          className="block w-full h-full cursor-pointer no-underline text-inherit select-none"
+        >
+          <div className="p-6 sm:p-8 rounded-[28px] text-white shadow-2xl flex flex-col justify-between h-full gap-6 bg-[#253BFF] group-hover/card:ring-2 group-hover/card:ring-white/50 transition-all duration-300">
           {/* Card Title & Description */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -406,6 +405,7 @@ export function ProjectsSection({
             </div>
           </div>
         </div>
+        </Link>
       </motion.div>
     );
   };
