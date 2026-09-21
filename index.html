@@ -3,8 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MYM Portfolio</title>
+
+    <!-- Primary Meta Tags -->
+    <title>Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Portfolio</title>
+    <meta name="title" content="Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Portfolio" />
+    <meta
+      name="description"
+      content="Meet Your Maker (MYM) is a multidisciplinary creative studio specializing in content creation, brand identity & graphic design, cinematic video editing, and modern software development."
+    />
+    <meta
+      name="keywords"
+      content="Meet Your Maker, MYM, MYM portfolio, creative studio, graphic design, content creator, video editor, software developer, UI UX design, livestream production, sports media, Zen Tactics, HLV Online, Modern Football"
+    />
+    <meta name="author" content="Meet Your Maker" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#05050A" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://mym-portfolio-gamma.vercel.app/" />
+
+    <!-- Open Graph / Facebook / LinkedIn / Discord -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://mym-portfolio-gamma.vercel.app/" />
+    <meta property="og:site_name" content="Meet Your Maker (MYM)" />
+    <meta property="og:title" content="Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Portfolio" />
+    <meta
+      property="og:description"
+      content="Pioneering creative studio and digital maker in Content Creation, Visual Design, Cinematic Video Editing, and Software Engineering."
+    />
+    <meta property="og:image" content="/logos/portfolio/official-logo-1.svg" />
+    <meta property="og:image:alt" content="Meet Your Maker (MYM) Studio Logo" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://mym-portfolio-gamma.vercel.app/" />
+    <meta name="twitter:title" content="Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Portfolio" />
+    <meta
+      name="twitter:description"
+      content="Pioneering creative studio and digital maker in Content Creation, Visual Design, Cinematic Video Editing, and Software Engineering."
+    />
+    <meta name="twitter:image" content="/logos/portfolio/official-logo-1.svg" />
 
     <!-- DNS Prefetch & Preconnect for external resources -->
     <link rel="preconnect" href="https://drive.google.com" crossorigin />
@@ -14,6 +56,138 @@
 
     <!-- Preload Critical Hero Brand Assets -->
     <link rel="preload" as="image" href="/logos/portfolio/official-logo-1.svg" fetchpriority="high" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://mym-portfolio-gamma.vercel.app/#website",
+            "url": "https://mym-portfolio-gamma.vercel.app/",
+            "name": "Meet Your Maker (MYM)",
+            "alternateName": ["MYM", "Meet Your Maker Studio"],
+            "description": "Multidisciplinary creative studio specializing in content creation, brand identity & graphic design, cinematic video editing, and modern software development.",
+            "publisher": {
+              "@id": "https://mym-portfolio-gamma.vercel.app/#organization"
+            },
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://mym-portfolio-gamma.vercel.app/#organization",
+            "name": "Meet Your Maker",
+            "alternateName": "MYM",
+            "url": "https://mym-portfolio-gamma.vercel.app/",
+            "logo": "https://mym-portfolio-gamma.vercel.app/logos/portfolio/official-logo-1.svg",
+            "description": "Creative studio crafting digital narratives, brand identities, high-impact motion visuals, and high-performance web software.",
+            "knowsAbout": [
+              "Content Creation & Strategy",
+              "Graphic Design & Brand Systems",
+              "Cinematic Video Editing & Motion Graphics",
+              "Software Design & Full-Stack Development",
+              "Livestream Production & Broadcast Design",
+              "UI/UX Design"
+            ],
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Creative & Engineering Services",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Content Creation",
+                    "description": "Compelling narratives and high-impact copy tailored to your brand voice."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Graphic Design",
+                    "description": "Brand identity systems, logos, and high-converting marketing visuals."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Cinematic Video Editing",
+                    "description": "Professional-grade editing, pacing, and sound design for digital channels."
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Software Design & Development",
+                    "description": "Scalable, modern web and mobile application engineering."
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://mym-portfolio-gamma.vercel.app/#projects",
+            "name": "Featured Projects & Channels",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Zen Tactics",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/zen-tactics"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Modern Football",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/modern-football"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "HLV Online",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/hlv-online"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "HLV Online Classic",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/hlv-online-classic"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "HLV Onlive",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/hlv-onlive"
+              },
+              {
+                "@type": "ListItem",
+                "position": 6,
+                "name": "Cúp Học Xem Bóng",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/cup-hoc-xem-bong"
+              },
+              {
+                "@type": "ListItem",
+                "position": 7,
+                "name": "The Watcher",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/the-watcher"
+              },
+              {
+                "@type": "ListItem",
+                "position": 8,
+                "name": "Zentlemen",
+                "url": "https://mym-portfolio-gamma.vercel.app/project/zentlemen"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

@@ -1,0 +1,6 @@
+# Robots.txt for Meet Your Maker (MYM) Portfolio
+User-agent: *
+Allow: /
+
+# Host & Sitemap
+Sitemap: https://mym-portfolio-gamma.vercel.app/sitemap.xml

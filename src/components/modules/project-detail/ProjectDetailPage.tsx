@@ -6,6 +6,7 @@ import { ArrowLeft, X, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { Footer } from "@/components/modules/footer";
 import { Safari } from "@/components/ui/safari";
+import { SEO } from "@/components/common/SEO";
 import {
   Layout23Slots,
   Layout12Slots,
@@ -72,8 +73,34 @@ export function ProjectDetailPage() {
     setActiveMedia(null);
   };
 
+  const projectStructuredData = project
+    ? {
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        name: project.title,
+        headline: `${project.title} - ${project.tag}`,
+        description: project.description,
+        abstract: project.vision,
+        creator: {
+          "@type": "Organization",
+          name: "Meet Your Maker (MYM)",
+          url: "https://mym-portfolio-gamma.vercel.app/",
+        },
+        dateCreated: project.year,
+        genre: project.category,
+        url: `https://mym-portfolio-gamma.vercel.app/project/${currentId}`,
+      }
+    : null;
+
   return (
     <div className="w-full min-h-screen bg-[#F6F7FD] text-[#05050A] flex flex-col font-sans select-none">
+      <SEO
+        title={project ? `${project.title} (${project.year})` : "Project Details"}
+        description={project ? `${project.title}: ${project.description}` : undefined}
+        canonicalPath={`/project/${currentId}`}
+        ogType="article"
+        structuredData={projectStructuredData}
+      />
       {/* 1. TOP HEADER BAR */}
       <motion.header
         initial={{ opacity: 0, y: -10 }}

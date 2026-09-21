@@ -1,0 +1,17 @@
+{
+  "name": "Meet Your Maker Portfolio",
+  "short_name": "MYM",
+  "description": "Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Digital Maker Portfolio",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05050A",
+  "theme_color": "#05050A",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

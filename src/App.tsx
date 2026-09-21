@@ -6,6 +6,7 @@ import { ProjectsSection } from "@/components/modules/projects-section";
 import { ProjectDetailPage } from "@/components/modules/project-detail";
 import { Footer } from "@/components/modules/footer";
 import { MymLogo } from "@/components/modules/mym-logo";
+import { SEO } from "@/components/common/SEO";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -349,6 +350,12 @@ function MainPortfolioPage() {
 
   return (
     <div className="relative w-screen max-w-full min-h-screen h-auto bg-[#05050A] text-white flex flex-col items-center overflow-x-hidden">
+      <SEO
+        canonicalPath="/"
+        description="Meet Your Maker (MYM) is a multidisciplinary creative studio specializing in content creation, brand identity & graphic design, cinematic video editing, and modern software development."
+      />
+      <h1 className="sr-only">Meet Your Maker (MYM) — Multidisciplinary Creative Studio & Portfolio</h1>
+
       {/* Scroll-Driven View Transition Layer */}
       <div
         className="fixed inset-0 pointer-events-none z-0"
