@@ -78,8 +78,13 @@ const SKILL_MODAL_SERVICES = [
   { id: "srv-content", title: "Content Creator" },
   { id: "srv-graphic", title: "Graphic Designer" },
   { id: "srv-video", title: "Cinematic video editor" },
+  { id: "srv-uxui", title: "UX/UI Designer & Developer" },
   { id: "srv-livestream", title: "Livestream production" },
 ];
+
+function hasSkillModal(id: string) {
+  return SKILL_MODAL_SERVICES.some((service) => service.id === id);
+}
 
 interface TimelineEntry {
   year: string;
@@ -313,6 +318,7 @@ export function OverviewSection({
     setSelectedSkillId(null);
   }, []);
   const handleSelectSkillModal = useCallback((id: string) => {
+    if (!hasSkillModal(id)) return;
     setSelectedSkillId(id);
   }, []);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -374,6 +380,7 @@ export function OverviewSection({
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch justify-items-center gap-6 sm:gap-8">
             {SERVICES.map((item, index) => {
               const Icon = item.icon;
+              const canOpen = hasSkillModal(item.id);
               return (
                 <motion.div
                   key={item.id}
@@ -390,8 +397,14 @@ export function OverviewSection({
                     gradientColor="transparent"
                     gradientOpacity={0}
                     cardClassName="bg-[#F6F7FD]/95 backdrop-blur-md h-full"
-                    className="h-full w-full rounded-[32px] shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 cursor-pointer border border-white/60"
-                    onClick={() => setSelectedSkillId(item.id)}
+                    className={`h-full w-full rounded-[32px] shadow-xl transition-all duration-300 border border-white/60 ${
+                      canOpen
+                        ? "hover:-translate-y-2 hover:shadow-2xl cursor-pointer"
+                        : "cursor-default"
+                    }`}
+                    onClick={
+                      canOpen ? () => setSelectedSkillId(item.id) : undefined
+                    }
                   >
                     <div
                       id={item.id}
@@ -579,15 +592,9 @@ export function OverviewSection({
 
       {/* Interactive Skill Detail Modal: Mounted strictly on skill select, fully unloaded on close */}
       <AnimatePresence>
-        {selectedSkillId && (
+        {selectedSkillId && hasSkillModal(selectedSkillId) && (
           <SkillDetailModal
-            skillId={
-              ["srv-content", "srv-graphic", "srv-video", "srv-livestream"].includes(
-                selectedSkillId
-              )
-                ? selectedSkillId
-                : "srv-content"
-            }
+            skillId={selectedSkillId}
             onClose={handleCloseSkillModal}
             onSelectSkill={handleSelectSkillModal}
             servicesList={SKILL_MODAL_SERVICES}

@@ -13,6 +13,7 @@ import {
   type SkillSlotItem,
   type SkillModalData,
 } from "@/data/skillsModalData";
+import { UxUiDesignerView } from "./WebsiteCompare";
 
 interface SkillDetailModalProps {
   isOpen?: boolean;
@@ -1465,14 +1466,14 @@ export function SkillDetailModal({
         } else {
           onCloseRef.current();
         }
-      } else if (!activeMediaRef.current && e.key === "ArrowLeft") {
-        if (prevSkillRef.current) {
-          onSelectSkillRef.current(prevSkillRef.current.id);
-        }
-      } else if (!activeMediaRef.current && e.key === "ArrowRight") {
-        if (nextSkillRef.current) {
-          onSelectSkillRef.current(nextSkillRef.current.id);
-        }
+      } else if (
+        !activeMediaRef.current &&
+        (e.key === "ArrowLeft" || e.key === "ArrowRight") &&
+        !(e.target instanceof Element && e.target.closest("[data-website-compare]"))
+      ) {
+        const skill =
+          e.key === "ArrowLeft" ? prevSkillRef.current : nextSkillRef.current;
+        if (skill) onSelectSkillRef.current(skill.id);
       }
     };
 
@@ -1648,6 +1649,7 @@ export function SkillDetailModal({
               skillData={currentSkillData}
             />
           )}
+          {skillId === "srv-uxui" && <UxUiDesignerView />}
           {skillId === "srv-livestream" && (
             <LivestreamProductionView
               onOpenMedia={handleOpenMedia}

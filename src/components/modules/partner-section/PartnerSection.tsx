@@ -41,12 +41,12 @@ export function PartnerSection({ partnerProgress = 0 }: PartnerSectionProps) {
 
       {/* Transparent Sponsors Marquee Bar (No Border, Transparent Background) */}
       <div className="w-full bg-transparent pt-0 pb-6 sm:pb-8 overflow-hidden">
-        <Marquee repeat={6} className="[--duration:36s] [--gap:3.5rem] sm:[--gap:6rem]">
-          <div className="flex items-center gap-14 sm:gap-20 md:gap-24 lg:gap-28 select-none">
+        <Marquee repeat={6} className="[--duration:36s] [--gap:2.5rem] sm:[--gap:3.5rem] md:[--gap:4.5rem] lg:[--gap:5rem]">
+          <div className="flex items-center gap-(--gap) select-none">
             {SPONSOR_LOGOS.map((sponsor, idx) => (
               <div
                 key={idx}
-                className="relative flex items-center justify-center shrink-0 h-16 sm:h-20 md:h-24 lg:h-28"
+                className="relative flex items-center justify-center shrink-0 h-12 sm:h-14 md:h-16 lg:h-20"
               >
                 {/* Dark Logo (Active on White Background) */}
                 <img

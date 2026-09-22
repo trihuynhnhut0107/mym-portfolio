@@ -7,6 +7,15 @@ const SCREEN_Y = 52
 const SCREEN_WIDTH = 1200
 const SCREEN_HEIGHT = 700
 
+export const SAFARI_FRAME = {
+  width: SAFARI_WIDTH,
+  height: SAFARI_HEIGHT,
+  screenX: SCREEN_X,
+  screenY: SCREEN_Y,
+  screenWidth: SCREEN_WIDTH,
+  screenHeight: SCREEN_HEIGHT,
+} as const
+
 // Calculated percentages
 const LEFT_PCT = (SCREEN_X / SAFARI_WIDTH) * 100
 const TOP_PCT = (SCREEN_Y / SAFARI_HEIGHT) * 100
