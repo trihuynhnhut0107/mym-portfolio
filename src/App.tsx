@@ -10,6 +10,7 @@ import { SEO } from "@/components/common/SEO";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAppStore } from "@/store";
 
 const pageTransitionVariants = {
   initial: {
@@ -35,21 +36,13 @@ const pageTransitionVariants = {
 };
 
 function ScrollToTop() {
-  const { pathname, hash, state } = useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    if (
-      hash === "#projects" ||
-      hash.startsWith("#project-") ||
-      (state as { scrollToProject?: string; scrollToProjects?: boolean } | null)
-        ?.scrollToProject ||
-      (state as { scrollToProject?: string; scrollToProjects?: boolean } | null)
-        ?.scrollToProjects
-    ) {
-      return;
+    if (pathname.startsWith("/project/")) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     }
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname, hash, state]);
+  }, [pathname]);
 
   return null;
 }
@@ -62,7 +55,7 @@ function PageTransitionLoader() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1000);
+    }, 750);
 
     return () => clearTimeout(timer);
   }, []);
@@ -74,7 +67,7 @@ function PageTransitionLoader() {
       setIsLoading(true);
       const timer = setTimeout(() => {
         setIsLoading(false);
-      }, 1000);
+      }, 750);
 
       return () => clearTimeout(timer);
     }
@@ -114,6 +107,37 @@ function PageTransitionLoader() {
   );
 }
 
+function GlobalNavigationCoordinator() {
+  const location = useLocation();
+  const prevPathnameRef = useRef(location.pathname);
+
+  useEffect(() => {
+    const prevPath = prevPathnameRef.current;
+    const currentPath = location.pathname;
+    prevPathnameRef.current = currentPath;
+
+    // Detect backward or any route transition from /project/* to /
+    if (prevPath.startsWith("/project/") && currentPath === "/") {
+      useAppStore.getState().syncOnReturnToHome();
+    }
+  }, [location.pathname]);
+
+  // Handle browser back button, mouse back shortcuts (buttons 3/4/5), and gesture swipes
+  useEffect(() => {
+    const handlePopState = () => {
+      const currentPath = window.location.pathname;
+      if (currentPath === "/" || currentPath === "") {
+        useAppStore.getState().syncOnReturnToHome();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  return null;
+}
+
 function PageTransition({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
@@ -133,33 +157,10 @@ function MainPortfolioPage() {
   const partnerRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
-    const targetProjectId =
-      (location.state as { scrollToProject?: string } | null)
-        ?.scrollToProject ||
-      (location.hash.startsWith("#project-")
-        ? location.hash.replace("#project-", "")
-        : null);
-
-    if (targetProjectId) {
-      const el = document.getElementById(`project-card-${targetProjectId}`);
-      if (el) {
-        el.scrollIntoView({ behavior: "instant", block: "center" });
-        return;
-      }
-    }
-
-    const shouldScrollToProjects =
-      location.hash === "#projects" ||
-      (location.state as { scrollToProjects?: boolean } | null)
-        ?.scrollToProjects;
-
-    if (shouldScrollToProjects && projectsRef.current) {
-      projectsRef.current.scrollIntoView({ behavior: "instant" });
-    }
-  }, [location.hash, location.state]);
+    useAppStore.getState().syncOnReturnToHome();
+  }, []);
 
   const targetProgressRef = useRef<number>(0);
   const currentProgressRef = useRef<number>(0);
@@ -330,8 +331,7 @@ function MainPortfolioPage() {
   }, []);
 
   const handleSelectProject = (projectId: string) => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(`/project/${projectId}`);
+    useAppStore.getState().navigateToProject(navigate, projectId);
   };
 
   const {
@@ -433,6 +433,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <GlobalNavigationCoordinator />
       <GlobalMediaCoordinator />
       <PageTransitionLoader />
       <AnimatePresence mode="wait">

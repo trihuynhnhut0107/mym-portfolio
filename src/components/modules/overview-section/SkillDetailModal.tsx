@@ -13,7 +13,7 @@ import {
   type SkillSlotItem,
   type SkillModalData,
 } from "@/data/skillsModalData";
-import { UxUiDesignerView } from "./WebsiteCompare";
+import { UxUiDesignerView } from "./UxUiDesignerView";
 
 interface SkillDetailModalProps {
   isOpen?: boolean;
@@ -1468,8 +1468,7 @@ export function SkillDetailModal({
         }
       } else if (
         !activeMediaRef.current &&
-        (e.key === "ArrowLeft" || e.key === "ArrowRight") &&
-        !(e.target instanceof Element && e.target.closest("[data-website-compare]"))
+        (e.key === "ArrowLeft" || e.key === "ArrowRight")
       ) {
         const skill =
           e.key === "ArrowLeft" ? prevSkillRef.current : nextSkillRef.current;

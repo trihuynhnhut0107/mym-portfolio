@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
+import { useAppStore } from "@/store";
 
 export interface ProjectStat {
   icon?: "play" | "eye" | "users" | "like" | "clock";
@@ -312,11 +313,21 @@ export function ProjectsSection({
   onSelectProject,
   projectsProgress = 1,
 }: ProjectsSectionProps) {
+  const navigate = useNavigate();
+  const navigateToProject = useAppStore((s) => s.navigateToProject);
   const labelColor = lerpColor(projectsProgress);
   const titleTextColor = lerpColor(projectsProgress);
   const descTextColor = lerpTextColor(projectsProgress);
 
   const renderCard = (project: ProjectItem) => {
+    const handleCardClick = () => {
+      if (onSelectProject) {
+        onSelectProject(project.id);
+      } else {
+        navigateToProject(navigate, project.id);
+      }
+    };
+
     return (
       <motion.div
         key={project.id}
@@ -325,19 +336,10 @@ export function ProjectsSection({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
-        className="w-full h-full group/card scroll-mt-24 sm:scroll-mt-32"
+        className="w-full h-full group/card scroll-mt-24 sm:scroll-mt-32 cursor-pointer"
+        onClick={handleCardClick}
       >
-        <Link
-          to={`/project/${project.id}`}
-          onClick={(e) => {
-            if (onSelectProject) {
-              e.preventDefault();
-              onSelectProject(project.id);
-            }
-          }}
-          className="block w-full h-full cursor-pointer no-underline text-inherit select-none"
-        >
-          <div className="p-6 sm:p-8 rounded-[28px] text-white shadow-2xl flex flex-col justify-between h-full gap-6 bg-[#253BFF] group-hover/card:ring-2 group-hover/card:ring-white/50 transition-all duration-300">
+        <div className="p-6 sm:p-8 rounded-[28px] text-white shadow-2xl flex flex-col justify-between h-full gap-6 bg-[#253BFF] group-hover/card:ring-2 group-hover/card:ring-white/50 transition-all duration-300">
           {/* Card Title & Description */}
           <div className="flex flex-col gap-3">
             <div className="flex items-center justify-between">
@@ -349,7 +351,7 @@ export function ProjectsSection({
               </span>
             </div>
 
-            <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-roboto font-normal">
+            <p className="text-white/90 text-xs sm:text-sm leading-relaxed font-roboto font-normal text-center [text-wrap:pretty]">
               {project.description}
             </p>
           </div>
@@ -384,7 +386,7 @@ export function ProjectsSection({
                 return (
                   <div
                     key={idx}
-                    className="relative aspect-square rounded-2xl overflow-hidden bg-black/20 border border-white/25 shadow-inner group/img cursor-pointer"
+                    className="relative aspect-square rounded-2xl overflow-hidden bg-black/20 border border-white/25 shadow-inner group/img"
                   >
                     {img ? (
                       <img
@@ -405,7 +407,6 @@ export function ProjectsSection({
             </div>
           </div>
         </div>
-        </Link>
       </motion.div>
     );
   };
@@ -443,7 +444,7 @@ export function ProjectsSection({
             </div>
 
             <div
-              className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm font-roboto leading-relaxed"
+              className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm font-roboto leading-relaxed text-center [text-wrap:pretty]"
               style={{ color: descTextColor }}
             >
               <p>
@@ -517,7 +518,7 @@ export function ProjectsSection({
               />
             </div>
 
-            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-[#05050A]/80 text-xs sm:text-sm font-roboto leading-relaxed">
+            <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-6 text-[#05050A]/80 text-xs sm:text-sm font-roboto leading-relaxed text-center [text-wrap:pretty]">
               <p>
                 HLV Online represents our signature milestone and most
                 successful sport media brand to date. By combining modern visual

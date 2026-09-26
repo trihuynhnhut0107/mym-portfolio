@@ -64,9 +64,11 @@ const TILES_3X12: Record<number, ActiveTileData> = {
   // Row 2
   24: {
     image: "/logos/project-logos/Up coming.png",
+    label: "Upcoming",
   },
   26: {
     image: "/logos/project-logos/Up coming.png",
+    label: "Upcoming",
   },
   28: {
     image: "/logos/project-logos/13_Nem Ngon.png",
@@ -78,9 +80,11 @@ const TILES_3X12: Record<number, ActiveTileData> = {
   },
   32: {
     image: "/logos/project-logos/Up coming.png",
+    label: "Upcoming",
   },
   34: {
     image: "/logos/project-logos/Up coming.png",
+    label: "Upcoming",
   },
 };
 
@@ -90,7 +94,7 @@ const DEFAULT_IMAGES = [
   "/logos/project-logos/3_Zen Cine.png",
 ];
 
-const DEFAULT_LABELS = ["Zen Tactics"];
+const DEFAULT_LABELS = ["Up-coming"];
 
 interface InteractiveGridPatternProps extends React.SVGProps<SVGSVGElement> {
   width?: number;
@@ -265,7 +269,9 @@ export function InteractiveGridPattern({
               y={y}
               width={width}
               height={hasBottomLabel ? height - 28 : height}
-              preserveAspectRatio={hasBottomLabel ? "xMidYMid meet" : "xMidYMid slice"}
+              preserveAspectRatio={
+                hasBottomLabel ? "xMidYMid meet" : "xMidYMid slice"
+              }
               className={cn(
                 "transition-opacity duration-300 ease-in-out pointer-events-none",
                 isLockedOpen ? "opacity-100" : "opacity-0",

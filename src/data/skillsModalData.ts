@@ -225,7 +225,7 @@ export const SKILLS_MODAL_DATA: Record<string, SkillModalData> = {
     id: "srv-video",
     title: "Cinematic video editor",
     prevSkillId: "srv-graphic",
-    nextSkillId: "srv-livestream",
+    nextSkillId: "srv-uxui",
     section1: {
       title: "2D Motion Graphic Video",
       description:
@@ -386,10 +386,37 @@ export const SKILLS_MODAL_DATA: Record<string, SkillModalData> = {
     },
   },
 
+  "srv-uxui": {
+    id: "srv-uxui",
+    title: "UX/UI Designer & Developer",
+    prevSkillId: "srv-video",
+    nextSkillId: "srv-livestream",
+    section1: {
+      title: "Zentlemen Web Portal",
+      description:
+        "A sports & entertainment web portal combining live discussions, tactical analysis, and multimedia video features.",
+    },
+    section2: {
+      title: "The Watcher Digital Publication",
+      description:
+        "A premium subscription-based editorial platform and digital publication exploring art, football culture, and visual essays.",
+    },
+    section3: {
+      title: "Interactive Web Architecture",
+      description:
+        "Engineered with modern frontend technologies, fluid responsive layouts, interactive live previews, and design systems.",
+    },
+    section4: {
+      title: "Full-Stack & Product Design",
+      description:
+        "End-to-end design and implementation spanning interface aesthetics, user experience journeys, performance optimization, and scalable codebases.",
+    },
+  },
+
   "srv-livestream": {
     id: "srv-livestream",
     title: "Livestream production",
-    prevSkillId: "srv-video",
+    prevSkillId: "srv-uxui",
     nextSkillId: "srv-content",
     section1: {
       title: "Broadcast Infrastructure & Multi-Cam",

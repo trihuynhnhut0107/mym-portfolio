@@ -1,5 +1,6 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useAppStore } from "@/store";
 import { SkillDetailModal } from "./SkillDetailModal";
 import {
   SquarePen,
@@ -313,14 +314,18 @@ interface OverviewSectionProps {
 export function OverviewSection({
   overviewProgress = 1,
 }: OverviewSectionProps) {
-  const [selectedSkillId, setSelectedSkillId] = useState<string | null>(null);
+  const selectedSkillId = useAppStore((s) => s.selectedSkillId);
+  const openSkillModal = useAppStore((s) => s.openSkillModal);
+  const closeSkillModal = useAppStore((s) => s.closeSkillModal);
+
   const handleCloseSkillModal = useCallback(() => {
-    setSelectedSkillId(null);
-  }, []);
+    closeSkillModal();
+  }, [closeSkillModal]);
+
   const handleSelectSkillModal = useCallback((id: string) => {
     if (!hasSkillModal(id)) return;
-    setSelectedSkillId(id);
-  }, []);
+    openSkillModal(id);
+  }, [openSkillModal]);
   const containerRef = useRef<HTMLDivElement>(null);
   const node0Ref = useRef<HTMLDivElement>(null);
   const node1Ref = useRef<HTMLDivElement>(null);
@@ -362,7 +367,7 @@ export function OverviewSection({
 
             <div
               style={{ color: descColor }}
-              className="flex flex-col gap-3 text-sm sm:text-base font-roboto leading-relaxed text-justify-center max-w-2xl transition-colors duration-150"
+              className="flex flex-col gap-3 text-sm sm:text-base font-roboto leading-relaxed text-center [text-wrap:pretty] max-w-2xl transition-colors duration-150"
             >
               <p>
                 Every great achievement begins as a fragment of imagination. But
@@ -384,11 +389,12 @@ export function OverviewSection({
               return (
                 <motion.div
                   key={item.id}
+                  id={item.id}
                   initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
-                  className="h-full w-full flex flex-col items-center"
+                  className="h-full w-full flex flex-col items-center scroll-mt-28"
                 >
                   <MagicCard
                     gradientSize={300}
@@ -403,13 +409,10 @@ export function OverviewSection({
                         : "cursor-default"
                     }`}
                     onClick={
-                      canOpen ? () => setSelectedSkillId(item.id) : undefined
+                      canOpen ? () => openSkillModal(item.id) : undefined
                     }
                   >
-                    <div
-                      id={item.id}
-                      className="p-8 sm:p-10 flex flex-col items-center justify-center text-center h-full min-h-[380px] sm:min-h-[420px]"
-                    >
+                    <div className="p-8 sm:p-10 flex flex-col items-center justify-center text-center h-full min-h-[380px] sm:min-h-[420px]">
                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#586CFF] via-[#253BFF] to-[#1627C4] flex items-center justify-center transition-all duration-500 group-hover:scale-110 border border-white/30 mb-6 sm:mb-8 shrink-0">
                         <Icon className="w-8 h-8 sm:w-10 sm:h-10 text-white stroke-[1.75]" />
                       </div>
@@ -418,7 +421,7 @@ export function OverviewSection({
                         {item.title}
                       </h3>
 
-                      <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-roboto max-w-sm text-justify-center">
+                      <p className="text-slate-600 text-xs sm:text-sm leading-relaxed font-roboto max-w-sm text-center [text-wrap:pretty]">
                         {item.description}
                       </p>
                     </div>
@@ -431,7 +434,7 @@ export function OverviewSection({
 
         {/* Part 2: Overview 6-years of MYM */}
         <div
-          id="overview"
+          id="overview-timeline"
           className="w-full flex flex-col items-center text-center gap-10 sm:gap-14 pt-8"
         >
           <h2 className="font-funnel text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight text-center">

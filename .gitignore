@@ -40,3 +40,7 @@ dist-ssr
 *.avi
 *.wmv
 
+# Allow Zen Tactics local vertical videos
+!public/videos/zen-tactics/7.mp4
+!public/videos/zen-tactics/8.mp4
+

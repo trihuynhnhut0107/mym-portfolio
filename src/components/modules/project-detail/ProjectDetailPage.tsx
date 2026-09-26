@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { PROJECTS_DETAIL_DATA } from "@/data/projectsData";
 import type { ProjectDetail } from "@/data/projectsData";
@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Footer } from "@/components/modules/footer";
 import { Safari } from "@/components/ui/safari";
 import { SEO } from "@/components/common/SEO";
+import { useAppStore } from "@/store";
 import {
   Layout23Slots,
   Layout12Slots,
@@ -21,6 +22,11 @@ export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
 
+  const fromSkillId = useAppStore((s) => s.fromSkillId);
+  const navigateBackFromProject = useAppStore(
+    (s) => s.navigateBackFromProject
+  );
+
   const currentId =
     projectId && PROJECTS_DETAIL_DATA[projectId] ? projectId : "zen-tactics";
   const project: ProjectDetail = PROJECTS_DETAIL_DATA[currentId];
@@ -33,10 +39,19 @@ export function ProjectDetailPage() {
     title: string;
   } | null>(null);
 
-  const handleBack = () => {
-    navigate(`/#project-${currentId}`, {
-      state: { scrollToProject: currentId, scrollToProjects: true },
+  const targetId = project?.id || currentId;
+
+  // Always reset viewport to top when opening or switching project detail pages
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    const raf = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     });
+    return () => cancelAnimationFrame(raf);
+  }, [projectId]);
+
+  const handleBack = () => {
+    navigateBackFromProject(navigate, targetId);
   };
 
   const handleOpenMedia = (url: string, title: string) => {
@@ -114,14 +129,14 @@ export function ProjectDetailPage() {
             className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/10 hover:bg-[#253BFF] text-white text-xs font-semibold uppercase tracking-wider transition-all duration-300 group cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform group-hover:-translate-x-1" />
-            <span>Back to Projects</span>
+            <span>{fromSkillId === "srv-uxui" ? "Back to UX/UI Skill" : "Back to Projects"}</span>
           </button>
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-white/50">
             <span
               onClick={handleBack}
               className="hover:text-white transition-colors cursor-pointer"
             >
-              MYM's Projects
+              {fromSkillId === "srv-uxui" ? "UX/UI Development" : "MYM's Projects"}
             </span>
             <span>/</span>
             <span className="text-[#253BFF] font-semibold">{project.title}</span>
